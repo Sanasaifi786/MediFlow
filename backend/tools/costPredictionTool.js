@@ -1,17 +1,8 @@
 const { askGemini } = require("../services/gemini.service");
+const { getCostPredictionPrompt } = require("../prompts");
 
 module.exports = async function ({ disease, age }) {
-  const prompt = `
-Estimate treatment cost in INR.
-
-Return ONLY JSON:
-{
-  "estimated_cost": number
-}
-
-Disease: ${disease}
-Age: ${age}
-`;
+  const prompt = getCostPredictionPrompt(disease, age);
 
   const raw = await askGemini(prompt);
 

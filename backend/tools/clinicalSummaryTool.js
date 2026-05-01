@@ -1,5 +1,8 @@
+const { getClinicalSummaryPrompt } = require("../prompts");
+
 module.exports = async function (timelineData) {
-  // Later replace with Gemini prompt specialized for doctors
+  const prompt = getClinicalSummaryPrompt(timelineData);
+  // Later execute this prompt with Gemini
   return `
 CLINICAL SUMMARY:
 Patient ${timelineData.name}, a ${timelineData.age}yo male, presented with ${timelineData.admissionReason}. 

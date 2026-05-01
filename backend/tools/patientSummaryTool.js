@@ -1,5 +1,8 @@
+const { getPatientSummaryPrompt } = require("../prompts");
+
 module.exports = async function (clinicalSummary) {
-  // Later replace with Gemini prompt specialized for patients (translation of clinical summary)
+  const prompt = getPatientSummaryPrompt(clinicalSummary);
+  // Later execute this prompt with Gemini
   return `
 DISCHARGE INSTRUCTIONS FOR PATIENT:
 Hello John,

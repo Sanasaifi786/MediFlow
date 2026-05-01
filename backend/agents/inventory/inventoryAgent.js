@@ -1,7 +1,8 @@
 const { checkStock, updateStock, getLowStock } = require("./tools");
-const { SYSTEM_PROMPT } = require("./prompts");
+const { getInventorySystemPrompt } = require("../../prompts");
 
 async function runInventoryAgent(query, action = "check") {
+  const SYSTEM_PROMPT = getInventorySystemPrompt();
   console.log(`[InventoryAgent] Processing query: ${query} with action: ${action}`);
   
   let result;

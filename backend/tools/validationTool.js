@@ -1,5 +1,8 @@
+const { getValidationPrompt } = require("../prompts");
+
 module.exports = async function (timelineData) {
-  // Later replace with Gemini prompt for completeness checking
+  const prompt = getValidationPrompt(timelineData);
+  // Later execute this prompt with Gemini
   const missingFields = [];
   
   if (!timelineData.dischargeDate) missingFields.push("dischargeDate");
