@@ -1,37 +1,35 @@
-const Inventory = require("../../models/Inventory");
+const Inventory = require("../../models/inventoryModel");
 
 const checkStock = async (itemName) => {
   try {
-    const item = await Inventory.findOne({ itemName: new RegExp(itemName, "i") });
+    const item = await Inventory.findOne({ medicine_name: new RegExp(itemName, "i") });
     if (!item) return { error: `Item "${itemName}" not found in inventory.` };
     return {
-      itemName: item.itemName,
-      quantity: item.quantity,
-      status: item.quantity > item.minThreshold ? "In Stock" : "Low Stock",
+      itemName: item.medicine_name,
+      quantity: item.current_stock,
+      status: item.current_stock > item.threshold ? "In Stock" : "Low Stock",
     };
   } catch (error) {
     return { error: error.message };
   }
 };
 
-const updateStock = async (itemName, change, category = "General") => {
+const updateStock = async (itemName, change) => {
   try {
-    let item = await Inventory.findOne({ itemName: new RegExp(itemName, "i") });
+    let item = await Inventory.findOne({ medicine_name: new RegExp(itemName, "i") });
     if (!item) {
       item = new Inventory({
-        itemName,
-        quantity: change,
-        category,
+        medicine_name: itemName,
+        current_stock: change,
       });
     } else {
-      item.quantity += change;
-      item.lastUpdated = Date.now();
+      item.current_stock += change;
     }
     await item.save();
     return {
       success: true,
-      itemName: item.itemName,
-      newQuantity: item.quantity,
+      itemName: item.medicine_name,
+      newQuantity: item.current_stock,
     };
   } catch (error) {
     return { error: error.message };
@@ -41,12 +39,12 @@ const updateStock = async (itemName, change, category = "General") => {
 const getLowStock = async () => {
   try {
     const lowStockItems = await Inventory.find({
-      $expr: { $lte: ["$quantity", "$minThreshold"] },
+      $expr: { $lte: ["$current_stock", "$threshold"] },
     });
     return lowStockItems.map((item) => ({
-      itemName: item.itemName,
-      quantity: item.quantity,
-      minThreshold: item.minThreshold,
+      itemName: item.medicine_name,
+      quantity: item.current_stock,
+      threshold: item.threshold,
     }));
   } catch (error) {
     return { error: error.message };
