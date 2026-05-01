@@ -23,6 +23,9 @@ const patientSchema = new mongoose.Schema(
   }
 );
 
+// Add index for faster searches
+patientSchema.index({ name: 1 });
+
 const Patient = mongoose.model("Patient", patientSchema);
 
 module.exports = Patient;
