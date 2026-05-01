@@ -6,6 +6,7 @@ const patientEventSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
       required: [true, "Patient ID is required"],
+      index: true,
     },
     type: {
       type: String,
@@ -29,6 +30,10 @@ const patientEventSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Explicit indexing for better performance
+patientEventSchema.index({ patient_id: 1 });
+patientEventSchema.index({ type: 1 });
 
 const PatientEvent = mongoose.model("PatientEvent", patientEventSchema);
 
