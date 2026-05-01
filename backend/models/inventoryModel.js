@@ -24,6 +24,9 @@ const inventorySchema = new mongoose.Schema(
   }
 );
 
+// Optimize searches by medicine name
+inventorySchema.index({ medicine_name: 1 });
+
 const Inventory = mongoose.model("Inventory", inventorySchema);
 
 module.exports = Inventory;
