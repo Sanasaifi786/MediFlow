@@ -4,27 +4,18 @@ const patientSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Patient name is required"],
-      trim: true,
+      required: true,
     },
     age: {
       type: Number,
-      required: [true, "Patient age is required"],
-      min: [0, "Age cannot be negative"],
+      required: true,
     },
     disease: {
       type: String,
-      required: [true, "Disease description is required"],
-      trim: true,
+      required: true,
     },
-  },
-  {
-    timestamps: true,
   }
 );
-
-// Add index for faster searches
-patientSchema.index({ name: 1 });
 
 const Patient = mongoose.model("Patient", patientSchema);
 
