@@ -6,6 +6,7 @@ const insuranceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
       required: [true, "Patient ID is required"],
+      index: true,
     },
     policy_type: {
       type: String,
@@ -22,6 +23,9 @@ const insuranceSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Explicit indexing on patient_id for faster lookups
+insuranceSchema.index({ patient_id: 1 });
 
 const Insurance = mongoose.model("Insurance", insuranceSchema);
 
