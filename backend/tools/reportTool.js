@@ -1,9 +1,14 @@
 module.exports = async function (context) {
+  const isEligible = context.eligibilityTool;
+  const estimatedCost = context.costPredictionTool;
+  const score = context.scoringTool || { probability: 0, risk: "unknown" };
+  const patient = context.entityExtractionTool || {};
+
   return {
-    status: context.eligibility ? "approved" : "rejected",
-    claim_amount: context.estimatedCost,
-    confidence: Math.round(context.score.probability * 100),
-    risk: context.score.risk,
-    patient: context.patient,
+    status: isEligible ? "approved" : "rejected",
+    claim_amount: estimatedCost,
+    confidence: Math.round(score.probability * 100),
+    risk: score.risk,
+    patient: patient,
   };
 };
