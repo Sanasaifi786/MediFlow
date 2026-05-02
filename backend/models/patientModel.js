@@ -17,6 +17,10 @@ const patientSchema = new mongoose.Schema(
       required: [true, "Disease description is required"],
       trim: true,
     },
+    policy_number: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,

@@ -39,22 +39,22 @@ const seedData = async () => {
     // 3. Create initial Patients
     console.log("Seeding Patients...");
     const patients = await Patient.create([
-      { name: "John Doe", age: 45, disease: "Chronic Hypertension" },
-      { name: "Jane Smith", age: 29, disease: "Type-2 Diabetes" },
-      { name: "Robert Johnson", age: 60, disease: "Acute Appendicitis" },
-      { name: "Emily Davis", age: 34, disease: "Pneumonia" },
-      { name: "Michael Wilson", age: 52, disease: "Coronary Artery Disease" }
+      { name: "John Doe", age: 45, disease: "Chronic Hypertension", policy_number: "PREM-001" },
+      { name: "Jane Smith", age: 29, disease: "Type-2 Diabetes", policy_number: "STD0-002" },
+      { name: "Robert Johnson", age: 60, disease: "Acute Appendicitis", policy_number: "PREM-003" },
+      { name: "Emily Davis", age: 34, disease: "Pneumonia", policy_number: "STD0-004" },
+      { name: "Michael Wilson", age: 52, disease: "Coronary Artery Disease", policy_number: "PREM-005" }
     ]);
     console.log(`Seeded ${patients.length} patients`);
 
     // 4. Create initial Insurances
     console.log("Seeding Insurances...");
     const insurances = await Insurance.create([
-      { patient_id: patients[0]._id, policy_type: "Gold Health Plus", past_claims: 2 },
-      { patient_id: patients[1]._id, policy_type: "Family Shield", past_claims: 0 },
-      { patient_id: patients[2]._id, policy_type: "Senior Platinum", past_claims: 5 },
-      { patient_id: patients[3]._id, policy_type: "Individual Basic", past_claims: 1 },
-      { patient_id: patients[4]._id, policy_type: "Corporate Premium", past_claims: 3 }
+      { patient_id: patients[0]._id, policy_type: "Gold Health Plus", policy_number: "PREM-001" },
+      { patient_id: patients[1]._id, policy_type: "Family Shield", policy_number: "STD0-002" },
+      { patient_id: patients[2]._id, policy_type: "Senior Platinum", policy_number: "PREM-003" },
+      { patient_id: patients[3]._id, policy_type: "Individual Basic", policy_number: "STD0-004" },
+      { patient_id: patients[4]._id, policy_type: "Corporate Premium", policy_number: "PREM-005" }
     ]);
     console.log(`Seeded ${insurances.length} insurance records`);
 
