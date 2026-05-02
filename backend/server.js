@@ -9,6 +9,7 @@ const inventoryRoute = require("./routes/inventory.route");
 const brainRoute = require("./routes/brain.route");
 const dischargeRoute = require("./routes/discharge.route");
 const authRoute = require("./routes/auth.route");
+const promptsRoute = require("./routes/prompts.route");
 const connectDB = require("./config/connectDB");
 const app = express();
 app.use(express.json());
@@ -18,6 +19,7 @@ app.use("/inventory", inventoryRoute);
 app.use("/brain", brainRoute);
 app.use("/discharge", dischargeRoute);
 app.use("/auth", authRoute);
+app.use("/prompts", promptsRoute);
 
 const PORT = process.env.PORT || 5000;
 
