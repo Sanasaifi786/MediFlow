@@ -6,6 +6,7 @@ import Assistant from './pages/Assistant';
 import Logs from './pages/Logs';
 import Report from './pages/Report';
 import Claims from './pages/Claims';
+import Inventory from './pages/Inventory';
 import Login from './pages/Login';
 
 // A simple protected route wrapper
@@ -37,6 +38,7 @@ function App() {
         <Route path="logs" element={<Logs />} />
         <Route path="reports" element={<Report />} />
         <Route path="claims" element={<Claims />} />
+        <Route path="inventory" element={<Inventory />} />
       </Route>
     </Routes>
   );

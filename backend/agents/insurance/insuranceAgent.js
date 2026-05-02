@@ -52,6 +52,14 @@ async function runInsuranceAgent(query) {
     const result = await tool(parsed.input);
     addLog("Insurance Agent", `Invoked ${parsed.action} successfully.`, "Tool Response", parsed.input, result);
 
+    if (result && result.error) {
+      addLog("Insurance Agent", `Tool error: ${result.error}`, "Tool Error", parsed.input, result);
+      return {
+        error: "Validation failed",
+        message: result.error
+      };
+    }
+
     context[parsed.action] = result;
   }
 

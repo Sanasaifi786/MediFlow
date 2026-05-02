@@ -9,6 +9,13 @@ async function runDischargeAgent(patientId) {
   // 🧩 STEP 1: Extract patient timeline data
   context.timeline = await timelineExtractionTool(patientId);
 
+  if (context.timeline && context.timeline.error) {
+    return {
+      status: "failed",
+      message: context.timeline.error
+    };
+  }
+
   // 🧩 STEP 2: Validate the completeness of the timeline data
   context.validation = await validationTool(context.timeline);
 
