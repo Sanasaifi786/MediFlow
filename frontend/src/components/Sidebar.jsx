@@ -1,14 +1,33 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Bot, Terminal, FileText, User, LogOut, ChevronUp } from 'lucide-react';
 
 const Sidebar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      const u = localStorage.getItem("user");
+      if (u) {
+        setUser(JSON.parse(u));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
 
   const menuItems = [
-    { name: 'Assistant', path: '/', icon: Bot },
-    { name: 'Logs', path: '/logs', icon: Terminal },
-    { name: 'Report', path: '/reports', icon: FileText },
+    { name: 'Assistant', path: '/app', icon: Bot },
+    { name: 'Logs', path: '/app/logs', icon: Terminal },
+    { name: 'Report', path: '/app/reports', icon: FileText },
   ];
 
   return (
@@ -58,7 +77,10 @@ const Sidebar = () => {
               My Profile
             </button>
             <div className="h-px bg-slate-100 my-1 mx-2"></div>
-            <button className="w-full flex items-center gap-3 px-4 py-3 text-rose-500 hover:bg-rose-50 rounded-xl text-sm font-bold transition-colors">
+            <button 
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 text-rose-500 hover:bg-rose-50 rounded-xl text-sm font-bold transition-colors"
+            >
               <LogOut size={18} />
               Logout
             </button>
@@ -74,11 +96,11 @@ const Sidebar = () => {
           <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-colors ${
             isProfileOpen ? 'bg-slate-800 text-white' : 'bg-brand-100 text-brand-600'
           }`}>
-            DS
+            {user?.name?.charAt(0)?.toUpperCase() || 'U'}
           </div>
           <div className="flex-1 min-w-0">
-            <p className={`text-sm font-bold truncate transition-colors ${isProfileOpen ? 'text-white' : 'text-slate-900'}`}>Dr. Smith</p>
-            <p className={`text-xs truncate transition-colors ${isProfileOpen ? 'text-slate-400' : 'text-slate-500'}`}>Cardiologist</p>
+            <p className={`text-sm font-bold truncate transition-colors ${isProfileOpen ? 'text-white' : 'text-slate-900'}`}>{user?.name || 'User'}</p>
+            <p className={`text-xs truncate capitalize transition-colors ${isProfileOpen ? 'text-slate-400' : 'text-slate-500'}`}>{user?.role || 'Guest'}</p>
           </div>
           <ChevronUp size={18} className={`transition-transform duration-300 ${isProfileOpen ? 'text-white rotate-180' : 'text-slate-400'}`} />
         </div>
