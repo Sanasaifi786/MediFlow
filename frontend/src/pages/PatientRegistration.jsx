@@ -13,7 +13,8 @@ const PatientRegistration = () => {
     name: '',
     age: '',
     disease: '',
-    policy_number: ''
+    policy_number: '',
+    patient_id: ''
   });
 
   const fetchPatients = async () => {
@@ -48,7 +49,7 @@ const PatientRegistration = () => {
       const res = await api.post('/patients', form);
       if (res.data.success) {
         setAlert({ type: 'success', message: 'Patient registered successfully!' });
-        setForm({ name: '', age: '', disease: '', policy_number: '' });
+        setForm({ name: '', age: '', disease: '', policy_number: '', patient_id: '' });
         fetchPatients();
       }
     } catch (err) {
@@ -135,6 +136,17 @@ const PatientRegistration = () => {
               />
             </div>
 
+            <div className="space-y-2">
+              <label className="text-xs font-black uppercase text-slate-400 tracking-wider">Patient ID (Optional)</label>
+              <input
+                type="text"
+                placeholder="e.g. PAT-1001"
+                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500 font-mono transition-all"
+                value={form.patient_id}
+                onChange={(e) => setForm({ ...form, patient_id: e.target.value })}
+              />
+            </div>
+
             <button
               type="submit"
               disabled={submitting || !form.name || !form.age || !form.disease}
@@ -173,6 +185,7 @@ const PatientRegistration = () => {
                     <th className="pb-4 text-xs font-black uppercase text-slate-400 tracking-wider">Patient Info</th>
                     <th className="pb-4 text-xs font-black uppercase text-slate-400 tracking-wider">Diagnosis</th>
                     <th className="pb-4 text-xs font-black uppercase text-slate-400 tracking-wider">Policy</th>
+                    <th className="pb-4 text-xs font-black uppercase text-slate-400 tracking-wider">ID</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
@@ -187,6 +200,9 @@ const PatientRegistration = () => {
                       </td>
                       <td className="py-4 text-sm font-mono font-bold text-brand-600">
                         {p.policy_number || 'N/A'}
+                      </td>
+                      <td className="py-4 text-sm font-mono font-bold text-slate-500">
+                        {p.patient_id || 'N/A'}
                       </td>
                     </tr>
                   ))}

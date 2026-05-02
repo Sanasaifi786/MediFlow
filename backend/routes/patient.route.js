@@ -9,7 +9,7 @@ const router = express.Router();
 // @access  Protected
 router.post("/", protect, async (req, res) => {
   try {
-    const { name, age, disease, policy_number } = req.body;
+    const { name, age, disease, policy_number, patient_id } = req.body;
 
     if (!name || !age || !disease) {
       return res.status(400).json({ message: "Name, age, and disease are required" });
@@ -19,7 +19,8 @@ router.post("/", protect, async (req, res) => {
       name,
       age,
       disease,
-      policy_number
+      policy_number,
+      patient_id
     });
 
     return res.status(201).json({ success: true, patient });

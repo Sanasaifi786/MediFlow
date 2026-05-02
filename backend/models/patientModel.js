@@ -21,11 +21,23 @@ const patientSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    patient_id: {
+      type: String,
+      unique: true,
+      trim: true,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+patientSchema.pre("save", async function (next) {
+  if (!this.patient_id) {
+    this.patient_id = `PAT-${Math.floor(1000 + Math.random() * 9000)}`;
+  }
+  next();
+});
 
 // Add index for faster searches
 patientSchema.index({ name: 1 });
