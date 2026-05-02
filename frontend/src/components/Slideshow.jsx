@@ -33,7 +33,7 @@ export default function Slideshow() {
 
   return (
     <div
-      className={`w-full md:w-1/2 p-12 text-white bg-gradient-to-br ${slides[slide].bg} transition-all duration-700 ease-in-out flex flex-col justify-between relative overflow-hidden select-none h-full min-h-full flex-1 self-stretch`}
+      className={`w-full md:w-1/2 p-12 text-white bg-gradient-to-br ${slides[slide].bg} transition-all duration-700 ease-in-out flex flex-col justify-between relative overflow-hidden select-none flex-1 self-stretch`}
     >
       <div className="absolute inset-0 bg-black/10"></div>
       <div className="relative z-10 flex flex-col justify-between flex-1">
