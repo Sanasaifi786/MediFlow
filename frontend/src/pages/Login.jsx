@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Slideshow from "../components/Slideshow";
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://mediflow-8qei.onrender.com";
 
 export default function Login() {
   const [email, setEmail] = useState("");

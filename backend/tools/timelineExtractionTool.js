@@ -1,9 +1,13 @@
 const Patient = require("../models/patientModel");
+const mongoose = require("mongoose");
 
 module.exports = async function (patientId) {
   try {
-    // Attempt to fetch patient from database
-    const patient = await Patient.findById(patientId);
+    // Attempt to fetch patient from database if patientId is a valid ObjectId
+    let patient = null;
+    if (mongoose.Types.ObjectId.isValid(patientId)) {
+      patient = await Patient.findById(patientId);
+    }
     
     if (patient) {
       return {

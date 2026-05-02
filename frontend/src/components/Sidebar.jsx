@@ -25,9 +25,17 @@ const Sidebar = ({ isCollapsed }) => {
   };
 
   const menuItems = [
-    { name: 'Assistant', path: '/app', icon: Bot },
-    { name: 'Logs', path: '/app/logs', icon: Terminal },
-    { name: 'Report', path: '/app/reports', icon: FileText },
+    { name: 'Dashboard', path: '/app', icon: Bot },
+    ...(user?.role === 'doctor' ? [
+      { name: 'Assistant', path: '/app/assistant', icon: Bot },
+      { name: 'Logs', path: '/app/logs', icon: Terminal },
+      { name: 'Report', path: '/app/reports', icon: FileText }
+    ] : []),
+    ...(user?.role === 'insurance_manager' ? [
+      { name: 'Assistant', path: '/app/assistant', icon: Bot },
+      { name: 'Logs', path: '/app/logs', icon: Terminal },
+      { name: 'Claims', path: '/app/claims', icon: FileText }
+    ] : [])
   ];
 
   return (
@@ -41,7 +49,7 @@ const Sidebar = ({ isCollapsed }) => {
           {!isCollapsed && (
             <div className="animate-in fade-in slide-in-from-left-4 duration-500">
               <h1 className="text-2xl font-black text-slate-900 tracking-tight">MediFlow</h1>
-              <p className="text-[10px] font-bold text-brand-600 uppercase tracking-widest">Doctor Portal</p>
+              <p className="text-[10px] font-bold text-brand-600 uppercase tracking-widest">{user?.role ? `${user.role} Portal` : 'Portal'}</p>
             </div>
           )}
         </div>

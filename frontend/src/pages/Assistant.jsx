@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import { Send, Sparkles, Loader2, Bot, BrainCircuit } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Send, Loader2, Bot } from 'lucide-react';
 import api from '../api';
 
 const Assistant = () => {
   const [query, setQuery] = useState('');
   const [result, setResult] = useState(null);
   const [isThinking, setIsThinking] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    try {
+      const u = localStorage.getItem('user');
+      if (u) setUser(JSON.parse(u));
+    } catch(e) {}
+  }, []);
 
   const handleQuery = async (e) => {
     e.preventDefault();
@@ -30,7 +38,7 @@ const Assistant = () => {
       {/* Welcome Header */}
       <div className="text-center mb-16 space-y-4 animate-in fade-in slide-in-from-top-8 duration-1000">
         <h2 className="text-5xl font-black text-slate-900 tracking-tight">
-          Hey, <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600 font-bold italic">Dr. Smith</span>, <br />
+          Hey, <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600 font-bold italic">{user?.name ? user.name : 'Doctor'}</span>, <br />
           welcome to MediFlow
         </h2>
         <p className="text-slate-500 text-lg max-w-lg mx-auto">
@@ -46,7 +54,7 @@ const Assistant = () => {
           className="relative bg-white rounded-[1.8rem] shadow-xl border border-slate-100 p-2 flex items-center gap-2"
         >
           <div className="pl-6 text-brand-500">
-            <BrainCircuit size={24} />
+            <Bot size={24} />
           </div>
           <input 
             type="text" 
