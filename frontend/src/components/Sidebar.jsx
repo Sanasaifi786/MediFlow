@@ -92,8 +92,7 @@ const Sidebar = ({ isCollapsed }) => {
       { name: 'Dashboard', path: '/app', icon: Bot },
       { name: 'Staff Management', path: '/app/staff', icon: UserPlus },
       { name: 'Assistant', path: '/app/assistant', icon: Bot },
-      { name: 'Reasoning Logs', path: '/app/logs', icon: Terminal },
-      { name: 'System Prompts', path: '/app/prompts', icon: Bot }
+      { name: 'Reasoning Logs', path: '/app/logs', icon: Terminal }
     ],
 
     nurse: [

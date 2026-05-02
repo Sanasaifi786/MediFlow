@@ -56,7 +56,6 @@ function App() {
         <Route path="logs" element={<Logs />} />
         <Route path="reports" element={<Report />} />
         <Route path="staff" element={<AddEmployee />} />
-        <Route path="prompts" element={<PromptManager />} />
         <Route path="nurse" element={<NursePortal />} />
         <Route path="claims" element={<Claims />} />
         <Route path="inventory" element={<Inventory />} />
