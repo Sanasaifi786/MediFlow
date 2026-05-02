@@ -73,31 +73,31 @@ const seedData = async () => {
     console.log("Seeding Patient Events...");
     const patientEvents = await PatientEvent.create([
       {
-        patient_id: patients[0]._id,
+        patient_id: patients[0].patient_id,
         type: "admission",
         details: "Patient admitted with high blood pressure (180/110).",
         timestamp: new Date("2026-04-28T09:00:00Z")
       },
       {
-        patient_id: patients[0]._id,
+        patient_id: patients[0].patient_id,
         type: "consultation",
         details: "Consultation with cardiologist Dr. Taylor regarding medication dosage.",
         timestamp: new Date("2026-04-29T11:30:00Z")
       },
       {
-        patient_id: patients[2]._id,
+        patient_id: patients[2].patient_id,
         type: "surgery",
         details: "Emergency appendectomy performed successfully.",
         timestamp: new Date("2026-05-01T14:00:00Z")
       },
       {
-        patient_id: patients[3]._id,
+        patient_id: patients[3].patient_id,
         type: "test",
         details: "Chest X-ray taken to monitor pneumonia recovery.",
         timestamp: new Date("2026-05-01T16:45:00Z")
       },
       {
-        patient_id: patients[1]._id,
+        patient_id: patients[1].patient_id,
         type: "consultation",
         details: "Routine check-up for diabetes management. HbA1c results within normal limits.",
         timestamp: new Date("2026-05-02T10:00:00Z")

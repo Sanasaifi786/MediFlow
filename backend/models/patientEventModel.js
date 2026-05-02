@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const patientEventSchema = new mongoose.Schema(
   {
     patient_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Patient",
+      type: String,
       required: [true, "Patient ID is required"],
       index: true,
     },
