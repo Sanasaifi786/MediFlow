@@ -82,33 +82,41 @@ const Sidebar = ({ isCollapsed }) => {
     navigate("/");
   };
 
-  const menuItems = [
-    { name: 'Dashboard', path: '/app', icon: Bot },
-    ...(user?.role === 'doctor' ? [
-      { name: 'Assistant', path: '/app/assistant', icon: Bot },
-      { name: 'Logs', path: '/app/logs', icon: Terminal },
+  const roleMenus = {
+    doctor: [
+      { name: 'Dashboard', path: '/app', icon: Bot },
       { name: 'Report', path: '/app/reports', icon: FileText }
-    ] : []),
-    ...(user?.role === 'admin' ? [
+    ],
+
+    admin: [
+      { name: 'Dashboard', path: '/app', icon: Bot },
       { name: 'Staff Management', path: '/app/staff', icon: UserPlus },
+      { name: 'Assistant', path: '/app/assistant', icon: Bot },
       { name: 'Reasoning Logs', path: '/app/logs', icon: Terminal },
       { name: 'System Prompts', path: '/app/prompts', icon: Bot }
-    ] : []),
-    ...(user?.role === 'nurse' ? [
+    ],
+
+    nurse: [
+      { name: 'Dashboard', path: '/app', icon: Bot },
       { name: 'Patient Logs', path: '/app/nurse', icon: ClipboardList }
-    ] : []),
-    ...(user?.role === 'insurance_manager' ? [
-      { name: 'Assistant', path: '/app/assistant', icon: Bot },
+    ],
+
+    insurance_manager: [
+      { name: 'Dashboard', path: '/app', icon: Bot },
       { name: 'Claims', path: '/app/claims', icon: FileText }
-    ] : []),
-    ...(user?.role === 'inventory_manager' ? [
-      { name: 'Assistant', path: '/app/assistant', icon: Bot },
+    ],
+
+    inventory_manager: [
+      { name: 'Dashboard', path: '/app', icon: Bot },
       { name: 'Inventory', path: '/app/inventory', icon: Package }
-    ] : []),
-    ...(user?.role === 'receptionist' ? [
+    ],
+
+    receptionist: [
       { name: 'Patient Registration', path: '/app/receptionist', icon: ClipboardList }
-    ] : [])
-  ];
+    ]
+  };
+
+  const menuItems = roleMenus[user?.role] || [];
 
   return (
     <div className="h-full flex flex-col transition-all duration-500 overflow-hidden">
