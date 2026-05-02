@@ -61,8 +61,11 @@ A 4-step agentic pipeline:
 ### 🛡️ Role-Based Access Control (RBAC)
 JWT-protected routes ensure every user sees only their designated portal. Login credentials determine the entire dashboard experience automatically.
 
-### 🩺 Doctor's AI Assistant
-A real-time conversational interface where doctors can ask clinical questions, check insurance eligibility, review inventory, and trigger discharge reports — all in natural language.
+### 🩺 Doctor's AI Assistant (Discharge Automation)
+Doctors can generate complete, dual-format discharge summaries with a single click — giving back hours of manual documentation time. The AI automatically reads the patient's full event timeline and produces a professional clinical report (for the doctor) and a simplified, friendly explanation (for the patient).
+
+### 🔍 Intelligent Insurance Claim Detector
+The Insurance Agent acts as an autonomous claim analysis engine — it reads patient data, fetches the linked policy, checks eligibility criteria, and produces an intelligent **claim approval score**. This eliminates slow, error-prone manual verification and helps insurance managers make faster, data-backed decisions.
 
 ### 👩‍⚕️ Nurse Event Logger with Smart Search
 Nurses can log real-time clinical events (consultations, tests, surgeries) using a **professional searchable patient selector** that filters by name or diagnosis across thousands of records instantly.
