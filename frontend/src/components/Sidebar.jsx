@@ -11,7 +11,7 @@ const Sidebar = ({ isCollapsed }) => {
   const [passwordData, setPasswordData] = useState({ newPassword: '', confirmPassword: '' });
   const [passwordStatus, setPasswordStatus] = useState({ type: '', message: '' });
   const [isPasswordUpdating, setIsPasswordUpdating] = useState(false);
-  
+
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -79,11 +79,11 @@ const Sidebar = ({ isCollapsed }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.href = "/";
+    navigate("/");
   };
 
   const menuItems = [
-    ...(user?.role !== 'receptionist' ? [{ name: 'Dashboard', path: '/app', icon: Bot }] : []),
+    { name: 'Dashboard', path: '/app', icon: Bot },
     ...(user?.role === 'doctor' ? [
       { name: 'Assistant', path: '/app/assistant', icon: Bot },
       { name: 'Logs', path: '/app/logs', icon: Terminal },
@@ -160,7 +160,7 @@ const Sidebar = ({ isCollapsed }) => {
         {/* Profile Dropdown Card */}
         {isProfileOpen && !isCollapsed && (
           <div className="absolute bottom-28 left-6 right-6 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 animate-in slide-in-from-bottom-2 duration-200 z-50">
-            <button 
+            <button
               onClick={handleOpenProfileModal}
               className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl text-sm font-bold transition-colors"
             >
@@ -205,9 +205,9 @@ const Sidebar = ({ isCollapsed }) => {
       {isProfileModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-in fade-in duration-300">
           <div className="bg-white max-w-lg w-full rounded-[2.5rem] border border-slate-100 shadow-2xl p-8 flex flex-col gap-6 relative animate-in zoom-in-95 duration-300">
-            
+
             {/* Close button */}
-            <button 
+            <button
               onClick={() => {
                 setIsProfileModalOpen(false);
                 setPasswordStatus({ type: '', message: '' });
@@ -267,34 +267,33 @@ const Sidebar = ({ isCollapsed }) => {
                     <KeyRound size={16} className="text-brand-600" />
                     Reset Access Password
                   </h3>
-                  
+
                   {passwordStatus.message && (
-                    <div className={`p-3 text-xs font-bold rounded-2xl animate-in slide-in-from-top-1 ${
-                      passwordStatus.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'
-                    }`}>
+                    <div className={`p-3 text-xs font-bold rounded-2xl animate-in slide-in-from-top-1 ${passwordStatus.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'
+                      }`}>
                       {passwordStatus.message}
                     </div>
                   )}
 
                   <form onSubmit={handleResetPassword} className="space-y-3">
                     <div>
-                      <input 
+                      <input
                         type="password"
                         placeholder="Enter New Access Password"
                         required
                         className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-brand-500 font-medium text-sm transition-all"
                         value={passwordData.newPassword}
-                        onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                       />
                     </div>
                     <div>
-                      <input 
+                      <input
                         type="password"
                         placeholder="Confirm Access Password"
                         required
                         className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-brand-500 font-medium text-sm transition-all"
                         value={passwordData.confirmPassword}
-                        onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                       />
                     </div>
                     <button
