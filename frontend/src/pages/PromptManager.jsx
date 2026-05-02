@@ -81,11 +81,10 @@ const PromptManager = () => {
               <button
                 key={p.name}
                 onClick={() => handleSelect(p)}
-                className={`w-full text-left px-5 py-4 rounded-2xl transition-all flex flex-col gap-1 ${
-                  selectedPrompt?.name === p.name 
-                  ? 'bg-slate-900 text-white shadow-lg shadow-slate-200 scale-[1.02]' 
-                  : 'hover:bg-slate-50 text-slate-600'
-                }`}
+                className={`w-full text-left px-5 py-4 rounded-2xl transition-all flex flex-col gap-1 ${selectedPrompt?.name === p.name
+                    ? 'bg-slate-900 text-white shadow-lg shadow-slate-200 scale-[1.02]'
+                    : 'hover:bg-slate-50 text-slate-600'
+                  }`}
               >
                 <span className="font-bold text-sm">{p.name.replace('.js', '').toUpperCase()}</span>
                 <span className={`text-[10px] ${selectedPrompt?.name === p.name ? 'text-slate-400' : 'text-slate-300'}`}>
@@ -110,19 +109,12 @@ const PromptManager = () => {
               </div>
               <div className="flex items-center gap-4">
                 {status.message && (
-                  <span className={`text-[10px] font-bold px-3 py-1 rounded-full animate-in fade-in slide-in-from-right-4 ${
-                    status.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
-                  }`}>
+                  <span className={`text-[10px] font-bold px-3 py-1 rounded-full animate-in fade-in slide-in-from-right-4 ${status.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
+                    }`}>
                     {status.message}
                   </span>
                 )}
-                <button 
-                  onClick={() => handleSelect(selectedPrompt)}
-                  className="px-6 py-2.5 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50 transition-all border border-slate-100"
-                >
-                  Discard
-                </button>
-                <button 
+                <button
                   onClick={handleSave}
                   disabled={saving || !selectedPrompt}
                   className="bg-slate-900 text-white px-6 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-slate-800 transition-all shadow-md disabled:opacity-50"
@@ -134,7 +126,7 @@ const PromptManager = () => {
             </div>
 
             <div className="flex-1 p-0 relative">
-              <textarea 
+              <textarea
                 className="w-full h-full p-8 font-mono text-sm bg-slate-950 text-emerald-400 outline-none resize-none selection:bg-brand-500 selection:text-white"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
@@ -153,7 +145,7 @@ const PromptManager = () => {
             <div>
               <h4 className="font-bold text-amber-800 text-sm mb-1">Caution: Kernel Modification</h4>
               <p className="text-amber-700/70 text-xs leading-relaxed">
-                Changes to system prompts directly affect how clinical data is analyzed. 
+                Changes to system prompts directly affect how clinical data is analyzed.
                 Ensure all templates maintain their <strong>JSON response format</strong> to avoid breaking agent communication.
               </p>
             </div>
