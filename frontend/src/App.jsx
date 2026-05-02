@@ -22,6 +22,23 @@ const AuthRoute = () => isAuthenticated() ? <Navigate to="/app" replace /> : <Lo
 // If NOT logged in, redirect to login page.
 const ProtectedRoute = ({ children }) => isAuthenticated() ? children : <Navigate to="/" replace />;
 
+const RoleHomeRoute = () => {
+  const userStr = localStorage.getItem("user");
+  if (!userStr) return <Navigate to="/" replace />;
+  try {
+    const user = JSON.parse(userStr);
+    if (user.role === 'inventory_manager') {
+      return <Navigate to="/app/inventory" replace />;
+    }
+    if (user.role === 'receptionist') {
+      return <Navigate to="/app/receptionist" replace />;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+  return <Dashboard />;
+};
+
 function App() {
   return (
     <Routes>
@@ -34,7 +51,7 @@ function App() {
           <Layout />
         </ProtectedRoute>
       }>
-        <Route index element={<Dashboard />} />
+        <Route index element={<RoleHomeRoute />} />
         <Route path="assistant" element={<Assistant />} />
         <Route path="logs" element={<Logs />} />
         <Route path="reports" element={<Report />} />

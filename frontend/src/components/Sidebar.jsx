@@ -107,7 +107,6 @@ const Sidebar = ({ isCollapsed }) => {
     ],
 
     inventory_manager: [
-      { name: 'Dashboard', path: '/app', icon: Bot },
       { name: 'Inventory', path: '/app/inventory', icon: Package }
     ],
 
