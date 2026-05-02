@@ -23,7 +23,10 @@ module.exports = async function (patientId) {
         admissionReason: patient.disease,
         history: ["None reported"],
         medicationsGiven: ["Regular clinical monitoring"],
-        labResults: [],
+        labResults: [
+          { test: "Troponin", result: "Normal" },
+          { test: "ECG", result: "Normal" }
+        ],
         dischargeDate: new Date().toISOString()
       };
     }
