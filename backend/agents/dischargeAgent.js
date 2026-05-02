@@ -33,6 +33,7 @@ async function runDischargeAgent(patientId) {
     patientId: context.timeline.patientId,
     patientName: context.timeline.name,
     dischargeDate: context.timeline.dischargeDate,
+    timeline: context.timeline,
     summaries: {
       clinicalSummary: context.clinicalSummary,
       patientSummary: context.patientSummary,
