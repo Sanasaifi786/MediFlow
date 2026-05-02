@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Assistant from './pages/Assistant';
 import Logs from './pages/Logs';
 import Report from './pages/Report';
+import AddEmployee from './pages/AddEmployee';
 import Claims from './pages/Claims';
 import Inventory from './pages/Inventory';
 import Login from './pages/Login';
@@ -37,6 +38,7 @@ function App() {
         <Route path="assistant" element={<Assistant />} />
         <Route path="logs" element={<Logs />} />
         <Route path="reports" element={<Report />} />
+        <Route path="staff" element={<AddEmployee />} />
         <Route path="claims" element={<Claims />} />
         <Route path="inventory" element={<Inventory />} />
       </Route>
