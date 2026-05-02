@@ -14,6 +14,14 @@ const NursePortal = () => {
     details: ''
   });
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const filteredPatients = patients.filter(p => 
+    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.disease.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const eventTypes = [
     { value: 'consultation', label: 'General Consultation' },
     { value: 'test', label: 'Diagnostic Test' },
@@ -47,7 +55,8 @@ const NursePortal = () => {
     try {
       await api.post('/nurse/log-event', formData);
       setStatus({ type: 'success', message: 'Clinical event logged successfully.' });
-      setFormData({ ...formData, details: '' }); // Clear only details
+      setFormData({ ...formData, details: '', patientId: '' }); // Clear only details and id
+      setSearchQuery('');
     } catch (err) {
       setStatus({ type: 'error', message: 'Failed to log event. Please try again.' });
     } finally {
@@ -109,20 +118,54 @@ const NursePortal = () => {
               )}
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Select Patient</label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
-                  <select 
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all text-sm font-medium appearance-none"
-                    value={formData.patientId}
-                    onChange={(e) => setFormData({...formData, patientId: e.target.value})}
-                    required
-                  >
-                    <option value="">Choose a patient...</option>
-                    {patients.map(p => (
-                      <option key={p._id} value={p._id}>{p.name} ({p.age}y - {p.disease})</option>
-                    ))}
-                  </select>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Search Patient</label>
+                <div className="relative group">
+                  <User className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${isDropdownOpen ? 'text-blue-500' : 'text-slate-300'}`} size={18} />
+                  <input 
+                    type="text"
+                    placeholder="Type patient name or disease..."
+                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all text-sm font-medium"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setIsDropdownOpen(true);
+                      if (formData.patientId) setFormData({...formData, patientId: ''});
+                    }}
+                    onFocus={() => setIsDropdownOpen(true)}
+                  />
+                  
+                  {isDropdownOpen && searchQuery.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl z-50 max-h-60 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
+                      {filteredPatients.length > 0 ? (
+                        filteredPatients.map(p => (
+                          <button
+                            key={p._id}
+                            type="button"
+                            className="w-full text-left px-6 py-4 hover:bg-blue-50 transition-colors flex flex-col gap-0.5 border-b border-slate-50 last:border-0"
+                            onClick={() => {
+                              setFormData({...formData, patientId: p._id});
+                              setSearchQuery(p.name);
+                              setIsDropdownOpen(false);
+                            }}
+                          >
+                            <span className="font-bold text-slate-900 text-sm">{p.name}</span>
+                            <span className="text-[10px] text-slate-400 uppercase font-black tracking-wider">{p.disease} • {p.age} Years</span>
+                          </button>
+                        ))
+                      ) : (
+                        <div className="px-6 py-8 text-center text-slate-400 italic text-sm">
+                          No matching patients found.
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {formData.patientId && (
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100 animate-in zoom-in duration-300">
+                      <CheckCircle2 size={14} />
+                      <span className="text-[10px] font-bold uppercase tracking-tight">Verified</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
