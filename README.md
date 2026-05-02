@@ -5,18 +5,24 @@
 MediFlow AI is a full-stack, production-ready clinical platform that automates critical hospital operations using **Autonomous AI Agents**. Built for multi-tenant healthcare environments, it provides role-specific portals for every member of the medical team — from Administrators and Doctors to Nurses and Insurance Managers — all powered by a centralized **Clinical Brain Agent** that intelligently plans, routes, and executes complex medical tasks.
 
 
----
+## 🌐 Explore Live
 
+Experience the live instance of the MediFlow application:
+- **Frontend URL**: [https://mediflow-deploy.vercel.app/](https://mediflow-deploy.vercel.app/)
+- **Backend API URL**: [https://mediflow-8qei.onrender.com](https://mediflow-8qei.onrender.com)
+
+---
 
 ## 📋 Table of Contents
 
-1. [Project Details](#-project-details)
-2. [Key Features](#-key-features)
-3. [Tech Stack](#-tech-stack)
-4. [Project Structure](#-project-structure)
-5. [Prompt Description](#-prompt-description)
-6. [Setup & Installation](#-setup--installation)
-7. [API Endpoints](#-api-endpoints)
+1. [Explore Live](#-explore-live)
+2. [Project Details](#-project-details)
+3. [Key Features](#-key-features)
+4. [Tech Stack](#-tech-stack)
+5. [Project Structure](#-project-structure)
+6. [Prompt Description](#-prompt-description)
+7. [Setup & Installation](#-setup--installation)
+8. [API Endpoints](#-api-endpoints)
 
 ---
 
