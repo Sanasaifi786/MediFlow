@@ -13,7 +13,14 @@ async function processQuery(query) {
 
   try {
     const raw = await askGemini(prompt);
-    const cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
+    let cleaned = raw;
+    const startIndex = raw.indexOf('{');
+    const endIndex = raw.lastIndexOf('}');
+    if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+      cleaned = raw.substring(startIndex, endIndex + 1);
+    } else {
+      cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
+    }
     parsed = JSON.parse(cleaned);
   } catch (error) {
     addLog("Brain Agent", `AI Router failed: ${error.message}. Falling back to ambiguous.`, "Routing Error");

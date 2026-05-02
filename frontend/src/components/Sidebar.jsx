@@ -38,7 +38,6 @@ const Sidebar = ({ isCollapsed }) => {
     ] : []),
     ...(user?.role === 'insurance_manager' ? [
       { name: 'Assistant', path: '/app/assistant', icon: Bot },
-      { name: 'Logs', path: '/app/logs', icon: Terminal },
       { name: 'Claims', path: '/app/claims', icon: FileText }
     ] : []),
     ...(user?.role === 'inventory_manager' ? [

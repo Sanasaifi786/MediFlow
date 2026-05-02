@@ -1,12 +1,46 @@
-import React, { useState } from 'react';
-import { Search, ShieldCheck, Activity, Download, Loader2, Sparkles, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, ShieldCheck, Activity, Download, Loader2, Sparkles, FileText, AlertCircle } from 'lucide-react';
 import api from '../api';
 
 const Claims = () => {
+  // Query state for quick AI prompt
   const [query, setQuery] = useState('');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [steps, setSteps] = useState([]);
+
+  // Database policies state
+  const [policies, setPolicies] = useState([]);
+  const [policiesLoading, setPoliciesLoading] = useState(true);
+
+  // Switcher for either Quick AI Prompt or Detailed Claim Form
+  const [activeTab, setActiveTab] = useState('prompt');
+
+  // Form Fields for Detailed Form
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
+  const [policyNo, setPolicyNo] = useState('');
+  const [disease, setDisease] = useState('');
+  const [estimatedCost, setEstimatedCost] = useState('');
+
+  // Fetch policies on component mount
+  const fetchPolicies = async () => {
+    try {
+      setPoliciesLoading(true);
+      const res = await api.get('/insurance/all');
+      if (res.data.success) {
+        setPolicies(res.data.policies || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch insurance policies', err);
+    } finally {
+      setPoliciesLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPolicies();
+  }, []);
 
   const processClaim = async (e) => {
     e.preventDefault();
@@ -29,6 +63,29 @@ const Claims = () => {
     }
   };
 
+  const processFormClaim = async (e) => {
+    e.preventDefault();
+    if (!name || !age || !policyNo || !disease) return;
+    setLoading(true);
+    setResult(null);
+    setSteps([]);
+
+    const craftedQuery = `Process insurance claim for ${age} year old ${disease} patient ${name} with policy ID ${policyNo} and estimated cost ₹${estimatedCost || 0}`;
+    
+    try {
+      const res = await api.post('/insurance/process', { query: craftedQuery });
+      if (res.data && res.data.data) {
+        setResult(res.data.data.result || "Claim processed successfully.");
+        setSteps(res.data.data.steps || []);
+      }
+    } catch (err) {
+      console.error(err);
+      setResult("Failed to process the insurance claim. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
       <header>
@@ -36,27 +93,157 @@ const Claims = () => {
         <p className="text-slate-500 font-medium">Process patient claims using autonomous AI agents.</p>
       </header>
 
-      {/* Claim Search */}
-      <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 items-center">
-        <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-3.5 text-slate-400" size={20} />
-          <input 
-            type="text" 
-            placeholder="e.g. Process insurance claim for 45 year old diabetic patient Ravi Kumar..." 
-            className="w-full pl-12 p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
+      {/* Database Active Policies View */}
+      <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-black text-slate-800">Database Active Policies</h3>
+          <span className="px-3 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-600 border border-brand-100">
+            {policies.length} Policies
+          </span>
         </div>
-        <button 
-          onClick={processClaim}
-          disabled={loading || !query.trim()}
-          className="w-full md:w-auto bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+        {policiesLoading ? (
+          <div className="flex justify-center p-4">
+            <Loader2 className="animate-spin text-brand-600" size={24} />
+          </div>
+        ) : policies.length === 0 ? (
+          <p className="text-slate-400 text-sm italic">No insurance policies found in the database.</p>
+        ) : (
+          <div className="overflow-x-auto border border-slate-50 rounded-2xl">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100">
+                  <th className="px-4 py-3 text-xs font-black uppercase text-slate-400">Patient</th>
+                  <th className="px-4 py-3 text-xs font-black uppercase text-slate-400">Type</th>
+                  <th className="px-4 py-3 text-xs font-black uppercase text-slate-400">Policy Number (ID)</th>
+                  <th className="px-4 py-3 text-xs font-black uppercase text-slate-400">Past Claims</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {policies.map((p) => (
+                  <tr key={p._id} className="text-sm font-medium hover:bg-slate-50/50">
+                    <td className="px-4 py-3 font-bold text-slate-800">{p.patient_id?.name || 'N/A'}</td>
+                    <td className="px-4 py-3 capitalize">{p.policy_type || 'standard'}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-slate-500 tracking-wider">{p._id}</td>
+                    <td className="px-4 py-3">{p.past_claims || 0}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Tabs Switcher for Query vs Detailed Form */}
+      <div className="flex gap-4 border-b border-slate-100">
+        <button
+          onClick={() => setActiveTab('prompt')}
+          className={`pb-4 px-2 text-sm font-bold border-b-2 transition-all ${
+            activeTab === 'prompt' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-400 hover:text-slate-600'
+          }`}
         >
-          {loading ? <Loader2 className="animate-spin" size={20} /> : <Sparkles size={20} />}
-          Process Claim
+          Quick AI Prompt
+        </button>
+        <button
+          onClick={() => setActiveTab('form')}
+          className={`pb-4 px-2 text-sm font-bold border-b-2 transition-all ${
+            activeTab === 'form' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-400 hover:text-slate-600'
+          }`}
+        >
+          Detailed Claim Form
         </button>
       </div>
+
+      {activeTab === 'prompt' ? (
+        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 items-center">
+          <div className="relative flex-1 w-full">
+            <Search className="absolute left-4 top-3.5 text-slate-400" size={20} />
+            <input 
+              type="text" 
+              placeholder="e.g. Process insurance claim for 45 year old diabetic patient Ravi Kumar..." 
+              className="w-full pl-12 p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-brand-500 transition-all font-medium"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+          <button 
+            onClick={processClaim}
+            disabled={loading || !query.trim()}
+            className="w-full md:w-auto bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            {loading ? <Loader2 className="animate-spin" size={20} /> : <Sparkles size={20} />}
+            Process Claim
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={processFormClaim} className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-xs font-black uppercase text-slate-400 tracking-wider">Patient Name</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. John Doe"
+                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-black uppercase text-slate-400 tracking-wider">Age</label>
+              <input
+                type="number"
+                required
+                min="0"
+                placeholder="e.g. 45"
+                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-black uppercase text-slate-400 tracking-wider">Policy Number / ID</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. 660f7bc..."
+                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500 font-mono"
+                value={policyNo}
+                onChange={(e) => setPolicyNo(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-black uppercase text-slate-400 tracking-wider">Diagnosis / Disease</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Hypertension"
+                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500"
+                value={disease}
+                onChange={(e) => setDisease(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <label className="text-xs font-black uppercase text-slate-400 tracking-wider">Estimated Treatment Cost (₹)</label>
+              <input
+                type="number"
+                min="0"
+                placeholder="e.g. 50000"
+                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500"
+                value={estimatedCost}
+                onChange={(e) => setEstimatedCost(e.target.value)}
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            disabled={loading || !name || !age || !policyNo || !disease}
+            className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            {loading ? <Loader2 className="animate-spin" size={20} /> : <Sparkles size={20} />}
+            Submit Detailed Claim
+          </button>
+        </form>
+      )}
 
       {(result || loading || steps.length > 0) && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -96,25 +283,86 @@ const Claims = () => {
           <div className="lg:col-span-7">
             {result ? (
               <div className="space-y-6 animate-in zoom-in-95 duration-500">
-                <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl">
-                   <div className="absolute top-0 right-0 p-8 opacity-10">
-                      <ShieldCheck size={120} />
-                   </div>
-                   <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                     <ShieldCheck size={24} className="text-indigo-400" />
-                     Final Claim Decision
-                   </h3>
-                   <div className="text-slate-300 leading-relaxed text-lg font-medium whitespace-pre-wrap">
-                     {typeof result === 'string' ? result : JSON.stringify(result, null, 2)}
-                   </div>
-                   <div className="mt-8 pt-6 border-t border-slate-800 flex justify-between items-center">
-                     <span className="text-xs text-slate-500 font-mono tracking-widest uppercase">Processed by MediFlow AI</span>
-                     <button className="flex items-center gap-2 text-indigo-400 font-bold hover:text-white transition-colors">
-                       <Download size={18} />
-                       Export Report
-                     </button>
-                   </div>
-                </div>
+                {typeof result === 'object' && result !== null ? (
+                  <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-6 text-slate-800 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
+                      <ShieldCheck size={140} />
+                    </div>
+                    <div className="flex items-center justify-between border-b pb-5">
+                      <div>
+                        <h3 className="text-2xl font-black text-slate-900 flex items-center gap-2">
+                          <ShieldCheck size={26} className="text-brand-600" />
+                          Claim Report Card
+                        </h3>
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Processed by MediFlow AI Agent</p>
+                      </div>
+                      <span className={`px-5 py-2.5 rounded-2xl text-sm font-black uppercase tracking-wider ${
+                        result.status === 'approved' 
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
+                          : 'bg-rose-100 text-rose-800 border border-rose-200'
+                      }`}>
+                        {result.status || 'unknown'}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Patient Profile</p>
+                        <p className="text-base font-black text-slate-800 truncate">{result.patient?.name || 'N/A'}</p>
+                      </div>
+                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Age / Diagnosis</p>
+                        <p className="text-base font-black text-slate-800 capitalize truncate">
+                          {result.patient?.age || 'N/A'} Yrs / {result.patient?.disease || 'N/A'}
+                        </p>
+                      </div>
+                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Confidence Score</p>
+                        <p className="text-base font-black text-slate-800">{result.confidence !== undefined ? `${result.confidence}%` : 'N/A'}</p>
+                      </div>
+                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Risk Assessment</p>
+                        <p className="text-base font-black text-slate-800 capitalize">{result.risk || 'N/A'}</p>
+                      </div>
+                      <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 col-span-2 flex justify-between items-center bg-gradient-to-r from-slate-50 to-brand-50/20">
+                        <div>
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Claim Coverage / Amount</p>
+                          <p className="text-2xl font-black text-brand-600">₹{result.claim_amount?.toLocaleString() || '0'}</p>
+                        </div>
+                        <button className="flex items-center gap-2 text-brand-600 font-bold hover:text-brand-800 transition-all text-sm bg-white border border-slate-100 px-4 py-2 rounded-xl shadow-sm">
+                          <Download size={16} />
+                          Export
+                        </button>
+                      </div>
+                    </div>
+
+                    {result.message && (
+                      <div className="bg-amber-50 border border-amber-200/50 p-4 rounded-2xl text-amber-800 text-sm font-medium leading-relaxed">
+                        {result.message}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl">
+                     <div className="absolute top-0 right-0 p-8 opacity-10">
+                        <ShieldCheck size={120} />
+                     </div>
+                     <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                       <ShieldCheck size={24} className="text-indigo-400" />
+                       Final Claim Decision
+                     </h3>
+                     <div className="text-slate-300 leading-relaxed text-lg font-medium whitespace-pre-wrap">
+                       {typeof result === 'string' ? result : JSON.stringify(result, null, 2)}
+                     </div>
+                     <div className="mt-8 pt-6 border-t border-slate-800 flex justify-between items-center">
+                       <span className="text-xs text-slate-500 font-mono tracking-widest uppercase">Processed by MediFlow AI</span>
+                       <button className="flex items-center gap-2 text-indigo-400 font-bold hover:text-white transition-colors">
+                         <Download size={18} />
+                         Export Report
+                       </button>
+                     </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="h-full bg-slate-50/50 rounded-[2.5rem] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-20 text-center min-h-[400px]">

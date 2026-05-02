@@ -1,7 +1,21 @@
 const express = require("express");
 const { runInsuranceAgent } = require("../agents/insurance/insuranceAgent");
+const Insurance = require("../models/insuranceModel");
 
 const router = express.Router();
+
+router.get("/all", async (req, res) => {
+  try {
+    const policies = await Insurance.find({}).populate("patient_id", "name age disease");
+    res.json({
+      success: true,
+      policies
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: "Failed to fetch policies" });
+  }
+});
 
 router.post("/process", async (req, res) => {
   try {
