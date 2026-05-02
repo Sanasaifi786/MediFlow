@@ -28,10 +28,10 @@ const Report = () => {
   const generateSummary = async () => {
     setLoading(true);
     try {
-      const res = await api.post('/discharge/generate', { timeline });
+      const res = await api.post('/discharge/generate', { patientId: patientId });
       setSummaries({
-        doctor: res.data.data.doctor_summary,
-        patient: res.data.data.patient_summary
+        doctor: res.data.summaries.clinicalSummary,
+        patient: res.data.summaries.patientSummary
       });
     } catch (err) {
       setSummaries({

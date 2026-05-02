@@ -78,17 +78,56 @@ const Assistant = () => {
 
       {/* Result Display Area */}
       {result && (
-        <div className="mt-12 w-full animate-in zoom-in-95 duration-500">
-          <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-2 h-full bg-brand-600"></div>
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 flex-shrink-0">
-                <Bot size={28} />
+        <div className="mt-12 w-full animate-in zoom-in-95 duration-500 pb-20">
+          <div className="bg-white rounded-[2rem] p-10 border border-slate-100 shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-3 h-full bg-brand-600"></div>
+            
+            <div className="flex items-start gap-6">
+              <div className="w-14 h-14 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 flex-shrink-0 shadow-sm border border-brand-100">
+                <Bot size={32} />
               </div>
-              <div className="flex-1">
-                <h4 className="font-bold text-slate-900 mb-2">Assistant Response</h4>
-                <div className="text-slate-600 leading-relaxed text-lg">
-                  {result.message || result.summary || JSON.stringify(result)}
+              
+              <div className="flex-1 space-y-6">
+                <div>
+                  <h4 className="font-black text-slate-900 text-xl mb-1 tracking-tight">MediFlow Brain Analysis</h4>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Autonomous Agent Response</p>
+                </div>
+
+                <div className="text-slate-700 leading-relaxed text-lg prose max-w-none">
+                  {/* Handle Insurance Agent Result */}
+                  {result.result && typeof result.result === 'string' && (
+                    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 italic">
+                      {result.result}
+                    </div>
+                  )}
+
+                  {/* Handle Discharge Agent Result */}
+                  {result.summaries && (
+                    <div className="space-y-4">
+                      <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100 text-emerald-800">
+                        <p className="font-bold text-xs uppercase mb-2">Patient Summary</p>
+                        {result.summaries.patientSummary}
+                      </div>
+                      <div className="p-4 bg-slate-900 rounded-xl text-slate-300 text-sm">
+                        <p className="font-bold text-xs text-brand-400 uppercase mb-2">Clinical Note</p>
+                        {result.summaries.clinicalSummary}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Handle Error/Clarity Result */}
+                  {result.error && (
+                    <div className="p-4 bg-rose-50 rounded-xl border border-rose-100 text-rose-700 font-bold">
+                      {result.error}
+                    </div>
+                  )}
+
+                  {/* Fallback for other data */}
+                  {!result.result && !result.summaries && !result.error && (
+                    <div className="font-mono text-sm bg-slate-50 p-4 rounded-xl border border-slate-200">
+                      {typeof result === 'object' ? JSON.stringify(result, null, 2) : result}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

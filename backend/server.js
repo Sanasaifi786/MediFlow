@@ -3,6 +3,7 @@ dotenv.config();
 
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const insuranceRoute = require("./routes/insurance.route");
 const inventoryRoute = require("./routes/inventory.route");
@@ -12,6 +13,7 @@ const authRoute = require("./routes/auth.route");
 const promptsRoute = require("./routes/prompts.route");
 const connectDB = require("./config/connectDB");
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.use("/insurance", insuranceRoute);
