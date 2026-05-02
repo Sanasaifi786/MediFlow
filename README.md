@@ -4,6 +4,61 @@
 
 MediFlow AI is a full-stack, production-ready clinical platform that automates critical hospital operations using **Autonomous AI Agents**. Built for multi-tenant healthcare environments, it provides role-specific portals for every member of the medical team — from Administrators and Doctors to Nurses and Insurance Managers — all powered by a centralized **Clinical Brain Agent** that intelligently plans, routes, and executes complex medical tasks.
 
+## 🗺️ System Architecture
+
+```mermaid
+flowchart TD
+    subgraph CLIENT["🖥️  Client Layer — Role-Based Portals"]
+        A1["🛡️ Admin Portal"]
+        A2["🩺 Doctor Portal"]
+        A3["👩‍⚕️ Nurse Portal"]
+        A4["🔍 Insurance Portal"]
+        A5["📦 Inventory Portal"]
+    end
+
+    subgraph FRONTEND["⚛️  Frontend — React 19 + Tailwind CSS v4"]
+        B["Axios Interceptors · React Router · JWT Auth"]
+    end
+
+    subgraph BACKEND["🚀  Backend — Node.js / Express (Port 5000)"]
+        C1["/auth · /nurse · /prompts"]
+        C2["/brain · /discharge · /insurance · /inventory"]
+    end
+
+    subgraph AI["🧠  AI Layer — Google Gemini 1.5 Flash"]
+        D["Clinical Brain Agent\nIntent Detection & Agent Routing"]
+    end
+
+    subgraph AGENTS["🤖  Specialist Agents"]
+        E1["📑 Discharge Agent\nTimeline → Validate\nClinical + Patient Summary"]
+        E2["🔍 Insurance Agent\nPatient Data → Policy\nClaim Score"]
+        E3["📦 Inventory Agent\nUsage Query → Stock\nReorder Alert"]
+    end
+
+    subgraph DATA["🗄️  Data Layer — MongoDB Atlas"]
+        F["Patients · Events · Employees · Insurance · Inventory"]
+    end
+
+    G["🕵️ Reasoning Hub\nLive Audit Logs"]
+
+    CLIENT --> FRONTEND
+    FRONTEND -->|REST API calls| BACKEND
+    BACKEND -->|Brain Agent dispatch| AI
+    AI -->|route| E1
+    AI -->|route| E2
+    AI -->|route| E3
+    E1 & E2 & E3 --> DATA
+    AI -.->|logs| G
+
+    style CLIENT fill:#f0fdf4,stroke:#86efac
+    style FRONTEND fill:#eff6ff,stroke:#93c5fd
+    style BACKEND fill:#fefce8,stroke:#fde047
+    style AI fill:#ecfdf5,stroke:#10b981,stroke-width:2px
+    style AGENTS fill:#f5f3ff,stroke:#a78bfa
+    style DATA fill:#1e293b,color:#f8fafc,stroke:#475569
+    style G fill:#fff7ed,stroke:#fdba74
+```
+
 ---
 
 ## 📋 Table of Contents
