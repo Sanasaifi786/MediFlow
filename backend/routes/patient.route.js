@@ -1,6 +1,7 @@
 const express = require("express");
 const Patient = require("../models/patientModel");
 const { protect } = require("../middleware/auth");
+const Insurance = require("../models/insuranceModel");
 
 const router = express.Router();
 
@@ -22,6 +23,15 @@ router.post("/", protect, async (req, res) => {
       policy_number,
       patient_id
     });
+
+    // Automatically create insurance policy if a policy_number exists
+    if (policy_number) {
+      await Insurance.create({
+        patient_id: patient.patient_id,
+        policy_type: "Individual Basic",
+        policy_number: policy_number
+      });
+    }
 
     return res.status(201).json({ success: true, patient });
   } catch (error) {

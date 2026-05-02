@@ -50,11 +50,11 @@ const seedData = async () => {
     // 4. Create initial Insurances
     console.log("Seeding Insurances...");
     const insurances = await Insurance.create([
-      { patient_id: patients[0]._id, policy_type: "Gold Health Plus", policy_number: "PREM-001" },
-      { patient_id: patients[1]._id, policy_type: "Family Shield", policy_number: "STD0-002" },
-      { patient_id: patients[2]._id, policy_type: "Senior Platinum", policy_number: "PREM-003" },
-      { patient_id: patients[3]._id, policy_type: "Individual Basic", policy_number: "STD0-004" },
-      { patient_id: patients[4]._id, policy_type: "Corporate Premium", policy_number: "PREM-005" }
+      { patient_id: patients[0].patient_id, policy_type: "Gold Health Plus", policy_number: "PREM-001" },
+      { patient_id: patients[1].patient_id, policy_type: "Family Shield", policy_number: "STD0-002" },
+      { patient_id: patients[2].patient_id, policy_type: "Senior Platinum", policy_number: "PREM-003" },
+      { patient_id: patients[3].patient_id, policy_type: "Individual Basic", policy_number: "STD0-004" },
+      { patient_id: patients[4].patient_id, policy_type: "Corporate Premium", policy_number: "PREM-005" }
     ]);
     console.log(`Seeded ${insurances.length} insurance records`);
 
