@@ -1,3 +1,4 @@
+
 #Link to the Demo Video
 https://drive.google.com/file/d/1807DGk9H54ejxynY-RtfrwIf4mCYbgFz/view?usp=drivesdk
 
@@ -26,6 +27,7 @@ Experience the live instance of the MediFlow application:
 6. [Prompt Description](#-prompt-description)
 7. [Setup & Installation](#-setup--installation)
 8. [API Endpoints](#-api-endpoints)
+9. Architecture Diagram
 
 ---
 
@@ -310,5 +312,6 @@ Use your Admin credentials to log in. If no admin exists, register one directly 
 | `JWT_SECRET` | JWT signing secret | `mediflow_secret_key` |
 
 ---
-
+## Architechture diagram
+<img width="1024" height="1024" alt="4157fb5e-013c-402b-abe1-401a3cf5c5b6" src="https://github.com/user-attachments/assets/a62b48a3-4c6c-4b13-81d9-27df329a42ad" />
 > Built with ❤️ for the next generation of intelligent healthcare.
