@@ -11,14 +11,33 @@ module.exports = async function (input) {
 
     // 1. Try matching by direct policy ID if a valid ObjectId is provided
     if (policyNo && mongoose.Types.ObjectId.isValid(policyNo)) {
-      policy = await Insurance.findById(policyNo).populate("patient_id");
+      policy = await Insurance.findById(policyNo);
+      if (policy) {
+        policy = policy.toObject();
+        const patient = await Patient.findOne({
+          $or: [
+            { patient_id: policy.patient_id },
+            { _id: mongoose.Types.ObjectId.isValid(policy.patient_id) ? policy.patient_id : new mongoose.Types.ObjectId() }
+          ]
+        });
+        policy.patient_id = patient;
+      }
     }
 
     // 2. Otherwise match by patient name
     if (!policy && name && typeof name === 'string') {
       const patient = await Patient.findOne({ name: new RegExp(name, "i") });
       if (patient) {
-        policy = await Insurance.findOne({ patient_id: patient._id }).populate("patient_id");
+        policy = await Insurance.findOne({
+          $or: [
+            { patient_id: patient.patient_id },
+            { patient_id: patient._id.toString() }
+          ]
+        });
+        if (policy) {
+          policy = policy.toObject();
+          policy.patient_id = patient;
+        }
       }
     }
 

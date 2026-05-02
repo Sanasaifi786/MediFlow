@@ -6,10 +6,31 @@ const router = express.Router();
 
 router.get("/all", async (req, res) => {
   try {
-    const policies = await Insurance.find({}).populate("patient_id", "name age disease");
+    const policies = await Insurance.find({}).lean();
+    const Patient = require("../models/patientModel");
+
+    const mappedPolicies = await Promise.all(
+      policies.map(async (p) => {
+        let patient = await Patient.findOne({ patient_id: p.patient_id }).lean();
+        if (!patient && require("mongoose").Types.ObjectId.isValid(p.patient_id)) {
+          patient = await Patient.findById(p.patient_id).lean();
+        }
+        return {
+          ...p,
+          patient_id: patient ? {
+            _id: patient._id,
+            name: patient.name,
+            age: patient.age,
+            disease: patient.disease,
+            patient_id: patient.patient_id
+          } : null
+        };
+      })
+    );
+
     res.json({
       success: true,
-      policies
+      policies: mappedPolicies
     });
   } catch (err) {
     console.error(err);
