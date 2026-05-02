@@ -1,59 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Search, ShieldCheck, Activity, Download, Loader2, Sparkles, FileText, AlertCircle } from 'lucide-react';
 import api from '../api';
 
 const Claims = () => {
-  // Query state for quick AI prompt
   const [query, setQuery] = useState('');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [steps, setSteps] = useState([]);
 
-  // Database policies state
-  const [policies, setPolicies] = useState([]);
-  const [policiesLoading, setPoliciesLoading] = useState(true);
-
-  // Switcher for either Quick AI Prompt or Detailed Claim Form
-  const [activeTab, setActiveTab] = useState('prompt');
-
-  // Form Fields for Detailed Form
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
-  const [policyNo, setPolicyNo] = useState('');
-  const [disease, setDisease] = useState('');
-  const [estimatedCost, setEstimatedCost] = useState('');
-
-  // Fetch policies on component mount
-  const fetchPolicies = async () => {
-    try {
-      setPoliciesLoading(true);
-      const res = await api.get('/insurance/all');
-      if (res.data.success) {
-        setPolicies(res.data.policies || []);
-      }
-    } catch (err) {
-      console.error('Failed to fetch insurance policies', err);
-    } finally {
-      setPoliciesLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPolicies();
-  }, []);
-
-  // Format any output into a structured object for the Report Card
-  const formatResult = (resValue, inName, inAge, inDisease) => {
+  const formatResult = (resValue) => {
     if (typeof resValue === 'object' && resValue !== null) {
       if (!resValue.patient) {
         resValue.patient = {
-          name: inName || 'N/A',
-          age: inAge || 'N/A',
-          disease: inDisease || 'N/A'
+          name: 'Extracted via AI',
+          age: 'N/A',
+          disease: 'N/A'
         };
       }
       return resValue;
     }
+
     if (typeof resValue === 'string') {
       try {
         const startIndex = resValue.indexOf('{');
@@ -64,21 +30,24 @@ const Claims = () => {
           if (parsed && typeof parsed === 'object') {
             if (!parsed.patient) {
               parsed.patient = {
-                name: inName || 'N/A',
-                age: inAge || 'N/A',
-                disease: inDisease || 'N/A'
+                name: 'Extracted via AI',
+                age: 'N/A',
+                disease: 'N/A'
               };
             }
             return parsed;
           }
         }
       } catch (e) {
-        // Fallback below
+        // Continue to fallback
       }
 
       const isApproved = /approve|eligible|accept|success/i.test(resValue);
       const riskMatch = resValue.match(/risk:\s*(\w+)/i) || resValue.match(/(\w+)\s*risk/i);
       const risk = riskMatch ? riskMatch[1] : (isApproved ? 'Low' : 'Medium/High');
+
+      const nameMatch = resValue.match(/patient\s+([\w\s]+?)\s+(?:with|has|is)/i) || resValue.match(/for\s+([\w\s]+?)(?:,|\s+with|\s+has)/i);
+      const name = nameMatch ? nameMatch[1].trim() : 'Extracted via AI';
 
       return {
         status: isApproved ? 'approved' : 'rejected',
@@ -86,18 +55,19 @@ const Claims = () => {
         confidence: 85,
         risk,
         patient: {
-          name: inName || 'N/A',
-          age: inAge || 'N/A',
-          disease: inDisease || 'N/A'
+          name,
+          age: 'N/A',
+          disease: 'N/A'
         },
         message: resValue
       };
     }
+
     return resValue;
   };
 
   const processClaim = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!query.trim()) return;
     setLoading(true);
     setResult(null);
@@ -112,7 +82,7 @@ const Claims = () => {
             message: res.data.data.error + (res.data.data.message ? `: ${res.data.data.message}` : '')
           });
         } else {
-          const formatted = formatResult(res.data.data.result, 'Extracted via AI', 'N/A', 'N/A');
+          const formatted = formatResult(res.data.data.result);
           setResult(formatted);
         }
         setSteps(res.data.data.steps || []);
@@ -121,41 +91,7 @@ const Claims = () => {
       console.error(err);
       setResult({
         error: true,
-        message: err.response?.data?.error || "Failed to process the insurance claim. Please try again."
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const processFormClaim = async (e) => {
-    e.preventDefault();
-    if (!name || !age || !policyNo || !disease) return;
-    setLoading(true);
-    setResult(null);
-    setSteps([]);
-
-    const craftedQuery = `Process insurance claim for ${age} year old ${disease} patient ${name} with policy ID ${policyNo} and estimated cost ₹${estimatedCost || 0}`;
-    
-    try {
-      const res = await api.post('/insurance/process', { query: craftedQuery });
-      if (res.data && res.data.data) {
-        if (res.data.data.error) {
-          setResult({
-            error: true,
-            message: res.data.data.error + (res.data.data.message ? `: ${res.data.data.message}` : '')
-          });
-        } else {
-          const formatted = formatResult(res.data.data.result, name, age, disease);
-          setResult(formatted);
-        }
-        setSteps(res.data.data.steps || []);
-      }
-    } catch (err) {
-      console.error(err);
-      setResult({
-        error: true,
-        message: err.response?.data?.error || "Failed to process the insurance claim. Please try again."
+        message: err.response?.data?.error || err.response?.data?.message || "Failed to process the insurance claim. Please try again."
       });
     } finally {
       setLoading(false);
@@ -169,34 +105,13 @@ const Claims = () => {
         <p className="text-slate-500 font-medium">Process patient claims using autonomous AI agents.</p>
       </header>
 
-
-      {/* Tabs Switcher for Query vs Detailed Form */}
-      <div className="flex gap-4 border-b border-slate-100">
-        <button
-          onClick={() => setActiveTab('prompt')}
-          className={`pb-4 px-2 text-sm font-bold border-b-2 transition-all ${
-            activeTab === 'prompt' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-400 hover:text-slate-600'
-          }`}
-        >
-          Quick AI Prompt
-        </button>
-        <button
-          onClick={() => setActiveTab('form')}
-          className={`pb-4 px-2 text-sm font-bold border-b-2 transition-all ${
-            activeTab === 'form' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-400 hover:text-slate-600'
-          }`}
-        >
-          Detailed Claim Form
-        </button>
-      </div>
-
-      {activeTab === 'prompt' ? (
-        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 items-center">
+      <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 space-y-4">
+        <div className="flex flex-col md:flex-row gap-4 items-center">
           <div className="relative flex-1 w-full">
             <Search className="absolute left-4 top-3.5 text-slate-400" size={20} />
             <input 
               type="text" 
-              placeholder="e.g. Process insurance claim for 45 year old diabetic patient Ravi Kumar..." 
+              placeholder="e.g. Process insurance claim for 45 year old Chronic Hypertension patient John Doe with policy ID PREM-001" 
               className="w-full pl-12 p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-brand-500 transition-all font-medium"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -211,76 +126,18 @@ const Claims = () => {
             Process Claim
           </button>
         </div>
-      ) : (
-        <form onSubmit={processFormClaim} className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-slate-400 tracking-wider">Patient Name</label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. John Doe"
-                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-slate-400 tracking-wider">Age</label>
-              <input
-                type="number"
-                required
-                min="0"
-                placeholder="e.g. 45"
-                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-slate-400 tracking-wider">Policy Number (ID)</label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. 660f7bc..."
-                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500 font-mono"
-                value={policyNo}
-                onChange={(e) => setPolicyNo(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-slate-400 tracking-wider">Diagnosis / Disease</label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Hypertension"
-                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500"
-                value={disease}
-                onChange={(e) => setDisease(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-xs font-black uppercase text-slate-400 tracking-wider">Estimated Treatment Cost (₹)</label>
-              <input
-                type="number"
-                min="0"
-                placeholder="e.g. 50000"
-                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500"
-                value={estimatedCost}
-                onChange={(e) => setEstimatedCost(e.target.value)}
-              />
-            </div>
+
+        <div className="bg-brand-50/40 border border-brand-100 rounded-2xl p-4 text-brand-800 text-sm flex items-start gap-3">
+          <Sparkles className="text-brand-600 flex-shrink-0 mt-0.5" size={18} />
+          <div>
+            <p className="font-bold">AI Query Tip & Suggested Structure</p>
+            <p className="text-xs text-brand-700 mt-1">
+              For fastest and most accurate processing, structure your query exactly like: <br />
+              <code className="bg-brand-100/50 px-1.5 py-0.5 rounded text-brand-900 font-mono">Process insurance claim for [Age] year old [Disease] patient [Name] with policy ID [Policy ID]</code>
+            </p>
           </div>
-          <button
-            type="submit"
-            disabled={loading || !name || !age || !policyNo || !disease}
-            className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            {loading ? <Loader2 className="animate-spin" size={20} /> : <Sparkles size={20} />}
-            Submit Detailed Claim
-          </button>
-        </form>
-      )}
+        </div>
+      </div>
 
       {(result || loading || steps.length > 0) && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -334,7 +191,7 @@ const Claims = () => {
                     </div>
                     <p className="text-sm font-medium leading-relaxed">{result.message}</p>
                   </div>
-                ) : typeof result === 'object' && result !== null ? (
+                ) : (
                   <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-6 text-slate-800 relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
                       <ShieldCheck size={140} />
@@ -394,26 +251,6 @@ const Claims = () => {
                         {result.message}
                       </div>
                     )}
-                  </div>
-                ) : (
-                  <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl">
-                     <div className="absolute top-0 right-0 p-8 opacity-10">
-                        <ShieldCheck size={120} />
-                     </div>
-                     <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                       <ShieldCheck size={24} className="text-indigo-400" />
-                       Final Claim Decision
-                     </h3>
-                     <div className="text-slate-300 leading-relaxed text-lg font-medium whitespace-pre-wrap">
-                       {typeof result === 'string' ? result : JSON.stringify(result, null, 2)}
-                     </div>
-                     <div className="mt-8 pt-6 border-t border-slate-800 flex justify-between items-center">
-                       <span className="text-xs text-slate-500 font-mono tracking-widest uppercase">Processed by MediFlow AI</span>
-                       <button className="flex items-center gap-2 text-indigo-400 font-bold hover:text-white transition-colors">
-                         <Download size={18} />
-                         Export Report
-                       </button>
-                     </div>
                   </div>
                 )}
               </div>
