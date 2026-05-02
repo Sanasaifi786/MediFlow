@@ -104,6 +104,9 @@ const Sidebar = ({ isCollapsed }) => {
     ...(user?.role === 'inventory_manager' ? [
       { name: 'Assistant', path: '/app/assistant', icon: Bot },
       { name: 'Inventory', path: '/app/inventory', icon: Package }
+    ] : []),
+    ...(user?.role === 'receptionist' ? [
+      { name: 'Patient Registration', path: '/app/receptionist', icon: ClipboardList }
     ] : [])
   ];
 

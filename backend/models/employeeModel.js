@@ -24,7 +24,7 @@ const employeeSchema = new mongoose.Schema(
       required: [true, "Employee role is required"],
       trim: true,
       enum: {
-        values: ["doctor", "inventory_manager", "insurance_manager", "nurse", "admin"],
+        values: ["doctor", "inventory_manager", "insurance_manager", "nurse", "admin", "receptionist"],
         message: "{VALUE} is not a valid employee role",
       },
     },

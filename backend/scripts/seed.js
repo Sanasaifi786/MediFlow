@@ -157,6 +157,16 @@ const seedData = async () => {
         phone: "+1-555-0105",
         salary: 110000,
         hire_date: new Date("2021-06-01")
+      },
+      {
+        name: "Chloe Sullivan",
+        email: "chloe.sullivan@mediflow.com",
+        password: "password123",
+        role: "receptionist",
+        department: "Front Desk & Reception",
+        phone: "+1-555-0106",
+        salary: 45000,
+        hire_date: new Date("2024-05-01")
       }
     ]);
     console.log(`Seeded ${employees.length} employee records`);
