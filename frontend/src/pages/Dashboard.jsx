@@ -12,10 +12,7 @@ const Dashboard = () => {
       try {
         const u = JSON.parse(localStorage.getItem('user'));
         setUser(u);
-        const token = localStorage.getItem('token');
-        const res = await api.get('/auth/dashboard', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await api.get('/auth/dashboard');
         setData(res.data);
       } catch (err) {
         console.error("Error fetching dashboard metrics:", err);

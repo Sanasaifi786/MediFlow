@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Slideshow from "../components/Slideshow";
-
-const BASE_URL = "https://mediflow-8qei.onrender.com";
+import api from "../api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -16,21 +15,15 @@ export default function Login() {
     setError("");
     setIsLoggingIn(true);
     try {
-      const res = await fetch(`${BASE_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        navigate("/app");
-      } else {
-        setError(data.message || "Invalid credentials");
-      }
+      const res = await api.post("/auth/login", { email, password });
+      
+      const { token, user } = res.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      
+      navigate("/app");
     } catch (err) {
-      setError("Server error. Please try again later.");
+      setError(err.response?.data?.message || "Invalid credentials or server error");
     } finally {
       setIsLoggingIn(false);
     }
@@ -39,9 +32,8 @@ export default function Login() {
   return (
     <div className="w-full min-h-screen bg-slate-50 flex flex-col font-sans select-none antialiased">
       <div className="flex-1 flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-green-50 px-4 py-8 select-none">
-        {/* Parent Container defining exact height and styling */}
         <div className="w-full max-w-4xl bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row items-stretch min-h-[580px] border border-slate-100/50">
-          {/* Left Section (Login Form Container) */}
+          
           <div className="w-full md:w-1/2 p-10 flex flex-col justify-between bg-gradient-to-br from-blue-50 via-green-50/30 to-transparent self-stretch">
             <div>
               <div className="flex items-center gap-3 mb-8">
@@ -101,16 +93,12 @@ export default function Login() {
             </div>
 
             <div className="mt-8 pt-4 border-t border-slate-100 text-center flex flex-col gap-2">
-              <a
-                href="#"
-                className="text-xs text-blue-700 font-semibold hover:underline"
-              >
+              <a href="#" className="text-xs text-blue-700 font-semibold hover:underline">
                 Forgot your password? Reset it here.
               </a>
             </div>
           </div>
 
-          {/* Right Section (Slideshow inherits its parent's height exactly) */}
           <Slideshow />
         </div>
       </div>
