@@ -39,13 +39,13 @@ const seedData = async () => {
     // 3. Create initial Patients
     console.log("Seeding Patients...");
     const patients = await Patient.create([
-      { name: "John Doe", age: 45, disease: "Chronic Hypertension", policy_number: "PREM-001" },
-      { name: "Jane Smith", age: 29, disease: "Type-2 Diabetes", policy_number: "STD0-002" },
-      { name: "Robert Johnson", age: 60, disease: "Acute Appendicitis", policy_number: "PREM-003" },
-      { name: "Emily Davis", age: 34, disease: "Pneumonia", policy_number: "STD0-004" },
-      { name: "Michael Wilson", age: 52, disease: "Coronary Artery Disease", policy_number: "PREM-005" }
+      { name: "John Doe",       age: 45, disease: "Chronic Hypertension",    policy_number: "PREM-001", patient_id: "PAT-1001" },
+      { name: "Jane Smith",     age: 29, disease: "Type-2 Diabetes",         policy_number: "STD0-002", patient_id: "PAT-1002" },
+      { name: "Robert Johnson", age: 60, disease: "Acute Appendicitis",      policy_number: "PREM-003", patient_id: "PAT-1003" },
+      { name: "Emily Davis",    age: 34, disease: "Pneumonia",               policy_number: "STD0-004", patient_id: "PAT-1004" },
+      { name: "Michael Wilson", age: 52, disease: "Coronary Artery Disease", policy_number: "PREM-005", patient_id: "PAT-1005" }
     ]);
-    console.log(`Seeded ${patients.length} patients`);
+    console.log(`Seeded ${patients.length} patients with readable patient_ids`);
 
     // 4. Create initial Insurances
     console.log("Seeding Insurances...");
