@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
@@ -13,23 +13,20 @@ import Inventory from './pages/Inventory';
 import Login from './pages/Login';
 import PatientRegistration from './pages/PatientRegistration';
 
-// A simple protected route wrapper
-const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    return <Navigate to="/" replace />;
-  }
-  return children;
-};
+// Re-evaluated on every render — never goes stale
+const isAuthenticated = () => !!localStorage.getItem("token");
+
+// If logged in, redirect to app. Otherwise show login page.
+const AuthRoute = () => isAuthenticated() ? <Navigate to="/app" replace /> : <Login />;
+
+// If NOT logged in, redirect to login page.
+const ProtectedRoute = ({ children }) => isAuthenticated() ? children : <Navigate to="/" replace />;
 
 function App() {
   return (
     <Routes>
       {/* Home path hits the login form. If already logged in, skip to /app */}
-      <Route
-        path="/"
-        element={localStorage.getItem("token") ? <Navigate to="/app" replace /> : <Login />}
-      />
+      <Route path="/" element={<AuthRoute />} />
 
       {/* Protected routes are nested under /app */}
       <Route path="/app" element={

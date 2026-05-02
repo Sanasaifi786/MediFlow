@@ -79,7 +79,7 @@ const Sidebar = ({ isCollapsed }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/");
+    window.location.href = "/";
   };
 
   const roleMenus = {
