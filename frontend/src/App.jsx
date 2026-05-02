@@ -11,6 +11,7 @@ import NursePortal from './pages/NursePortal';
 import Claims from './pages/Claims';
 import Inventory from './pages/Inventory';
 import Login from './pages/Login';
+import PatientRegistration from './pages/PatientRegistration';
 
 // A simple protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -45,6 +46,7 @@ function App() {
         <Route path="nurse" element={<NursePortal />} />
         <Route path="claims" element={<Claims />} />
         <Route path="inventory" element={<Inventory />} />
+        <Route path="receptionist" element={<PatientRegistration />} />
       </Route>
     </Routes>
   );

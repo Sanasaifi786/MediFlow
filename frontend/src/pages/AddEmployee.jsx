@@ -22,6 +22,7 @@ const AddEmployee = () => {
     { value: 'nurse', label: 'Nurse' },
     { value: 'inventory_manager', label: 'Inventory Manager' },
     { value: 'insurance_manager', label: 'Insurance Manager' },
+    { value: 'receptionist', label: 'Receptionist' },
   ];
 
   const handleSubmit = async (e) => {

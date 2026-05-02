@@ -140,6 +140,19 @@ router.get("/dashboard", protect, async (req, res) => {
         };
         break;
 
+      case "receptionist":
+        const activePatientsCount = await Patient.countDocuments({});
+        const recentRegistered = await Patient.find({})
+          .sort({ createdAt: -1 })
+          .limit(5);
+        metrics = {
+          role,
+          totalPatients: activePatientsCount,
+          recentRegistered,
+          message: "Register new patient arrivals"
+        };
+        break;
+
       default:
         metrics = {
           role,

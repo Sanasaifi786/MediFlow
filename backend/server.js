@@ -12,6 +12,7 @@ const dischargeRoute = require("./routes/discharge.route");
 const authRoute = require("./routes/auth.route");
 const promptsRoute = require("./routes/prompts.route");
 const nurseRoute = require("./routes/nurse.route");
+const patientRoute = require("./routes/patient.route");
 const connectDB = require("./config/connectDB");
 const app = express();
 app.use(cors());
@@ -24,6 +25,7 @@ app.use("/discharge", dischargeRoute);
 app.use("/auth", authRoute);
 app.use("/prompts", promptsRoute);
 app.use("/nurse", nurseRoute);
+app.use("/patients", patientRoute);
 
 const PORT = process.env.PORT || 5000;
 
