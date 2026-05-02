@@ -154,4 +154,110 @@ router.get("/dashboard", protect, async (req, res) => {
   }
 });
 
+// @desc    Create new employee
+// @route   POST /auth/employees
+// @access  Protected (Admin only)
+router.post("/employees", protect, async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+
+    const { name, email, password, role, department, phone, salary, hire_date } = req.body;
+
+    if (!name || !email || !password || !role || !department || salary === undefined) {
+      return res.status(400).json({ message: "Please provide all required fields" });
+    }
+
+    const existingEmployee = await Employee.findOne({ email });
+    if (existingEmployee) {
+      return res.status(400).json({ message: "Employee with this email already exists" });
+    }
+
+    const newEmployee = await Employee.create({
+      name,
+      email,
+      password,
+      role,
+      department,
+      phone,
+      salary,
+      hire_date: hire_date || Date.now()
+    });
+
+    const empObj = newEmployee.toObject();
+    delete empObj.password;
+
+    return res.status(201).json({
+      message: "Employee created successfully",
+      employee: empObj
+    });
+  } catch (error) {
+    console.error("Create employee error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// @desc    Get all active employees
+// @route   GET /auth/employees
+// @access  Protected (Admin only)
+router.get("/employees", protect, async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+
+    const employees = await Employee.find({}).select("-password");
+    return res.status(200).json(employees);
+  } catch (error) {
+    console.error("Fetch employees error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// @desc    Reset password
+// @route   POST /auth/reset-password
+// @access  Public
+router.post("/reset-password", async (req, res) => {
+  try {
+    const { email, phone, newPassword } = req.body;
+
+    if (!newPassword) {
+      return res.status(400).json({ message: "Please provide the new password" });
+    }
+
+    let employee;
+
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+      try {
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "mediflow_secret_key_12345");
+        employee = await Employee.findById(decoded.id);
+      } catch (err) {
+        // Continue to search via body details
+      }
+    }
+
+    if (!employee) {
+      if (!email || !phone) {
+        return res.status(400).json({ message: "Please provide email and phone number to verify identity" });
+      }
+      employee = await Employee.findOne({ email, phone });
+    }
+
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found or invalid details" });
+    }
+
+    employee.password = newPassword;
+    await employee.save();
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Password reset error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 module.exports = router;
+
