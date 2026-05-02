@@ -14,8 +14,9 @@ MediFlow AI is a full-stack, production-ready clinical platform that automates c
 2. [Key Features](#-key-features)
 3. [Tech Stack](#-tech-stack)
 4. [Project Structure](#-project-structure)
-5. [Setup & Installation](#-setup--installation)
-6. [API Endpoints](#-api-endpoints)
+5. [Prompt Description](#-prompt-description)
+6. [Setup & Installation](#-setup--installation)
+7. [API Endpoints](#-api-endpoints)
 
 ---
 
@@ -164,6 +165,38 @@ MediFlow/
         ├── App.jsx                 # Route definitions
         └── index.css               # Tailwind + Custom Design System
 ```
+
+---
+
+## 🧩 Prompt Description
+
+MediFlow uses dynamic **AI Prompts** located in the `backend/prompts` directory to control agent behavior, analyze information, and output structured JSON data:
+
+### 🧠 Master Brain Router Prompt
+- **File**: `backend/prompts/brain.js`
+- **Description**: Governs the main intent classification system of the application.
+- **Purpose**: Analyzes raw clinical or operational queries and intelligently directs them to specialized agents (`insurance`, `inventory`, `discharge`, or `unknown`) while identifying any patient reference IDs in the text.
+
+### 🛡️ Insurance Agent Prompts
+- **File**: `backend/prompts/insurance.js`
+- **Descriptions**:
+  - **Entity Extraction**: Pulls the patient's name, age, and disease from unstructured text.
+  - **Cost Prediction**: Estimates the treatment cost (in INR) based on the disease and age.
+  - **Agent Loop Prompt**: Orchestrates the autonomous agent logic to call appropriate extraction, policy verification, eligibility checking, and risk scoring tools before outputting the final result.
+- **Purpose**: Automates claim verification, eligibility checks, and overall risk analysis in a unified medical-insurance loop.
+
+### 📑 Discharge Agent Prompts
+- **File**: `backend/prompts/discharge.js`
+- **Descriptions**:
+  - **Data Validation**: Inspects patient history and timelines for critical data points.
+  - **Clinical Summary**: Generates a professional, medically precise discharge report for the medical team.
+  - **Patient Summary**: Converts the clinical report into clear, easy-to-understand, and supportive instructions for the patient.
+- **Purpose**: Reduces the manual paperwork burden for doctors while ensuring patients receive clear and accurate health summaries upon discharge.
+
+### 💊 Inventory Agent Prompts
+- **File**: `backend/prompts/inventory.js`
+- **Description**: Configures the Hospital Inventory Management Agent.
+- **Purpose**: Powers queries regarding medicine/supply stock levels, updates inventory counts, and identifies low-stock items.
 
 ---
 
