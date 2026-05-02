@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Bot, Terminal, FileText, User, LogOut, ChevronUp } from 'lucide-react';
+import { Bot, Terminal, FileText, User, LogOut, ChevronUp, Package } from 'lucide-react';
 
 const Sidebar = ({ isCollapsed }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -35,6 +35,10 @@ const Sidebar = ({ isCollapsed }) => {
       { name: 'Assistant', path: '/app/assistant', icon: Bot },
       { name: 'Logs', path: '/app/logs', icon: Terminal },
       { name: 'Claims', path: '/app/claims', icon: FileText }
+    ] : []),
+    ...(user?.role === 'inventory_manager' ? [
+      { name: 'Assistant', path: '/app/assistant', icon: Bot },
+      { name: 'Inventory', path: '/app/inventory', icon: Package }
     ] : [])
   ];
 
@@ -106,8 +110,8 @@ const Sidebar = ({ isCollapsed }) => {
         <div
           onClick={() => !isCollapsed && setIsProfileOpen(!isProfileOpen)}
           className={`group flex items-center transition-all duration-500 cursor-pointer border ${isCollapsed
-              ? 'justify-center p-3 rounded-xl border-transparent hover:bg-slate-100'
-              : `p-4 rounded-2xl gap-3 ${isProfileOpen ? 'bg-slate-900 border-slate-900 shadow-lg' : 'bg-slate-50 border-transparent hover:bg-slate-100'}`
+            ? 'justify-center p-3 rounded-xl border-transparent hover:bg-slate-100'
+            : `p-4 rounded-2xl gap-3 ${isProfileOpen ? 'bg-slate-900 border-slate-900 shadow-lg' : 'bg-slate-50 border-transparent hover:bg-slate-100'}`
             }`}
         >
           <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 transition-colors ${isProfileOpen ? 'bg-slate-800 text-white' : 'bg-brand-100 text-brand-600'
