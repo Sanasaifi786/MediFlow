@@ -83,7 +83,7 @@ const Sidebar = ({ isCollapsed }) => {
   };
 
   const menuItems = [
-    { name: 'Dashboard', path: '/app', icon: Bot },
+    ...(user?.role !== 'receptionist' ? [{ name: 'Dashboard', path: '/app', icon: Bot }] : []),
     ...(user?.role === 'doctor' ? [
       { name: 'Assistant', path: '/app/assistant', icon: Bot },
       { name: 'Logs', path: '/app/logs', icon: Terminal },
