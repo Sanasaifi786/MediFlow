@@ -8,6 +8,7 @@ const insuranceRoute = require("./routes/insurance.route");
 const inventoryRoute = require("./routes/inventory.route");
 const brainRoute = require("./routes/brain.route");
 const dischargeRoute = require("./routes/discharge.route");
+const authRoute = require("./routes/auth.route");
 const connectDB = require("./config/connectDB");
 const app = express();
 app.use(express.json());
@@ -16,6 +17,7 @@ app.use("/insurance", insuranceRoute);
 app.use("/inventory", inventoryRoute);
 app.use("/brain", brainRoute);
 app.use("/discharge", dischargeRoute);
+app.use("/auth", authRoute);
 
 const PORT = process.env.PORT || 5000;
 

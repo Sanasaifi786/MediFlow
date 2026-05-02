@@ -111,6 +111,7 @@ const seedData = async () => {
       {
         name: "Dr. Sarah Taylor",
         email: "sarah.taylor@mediflow.com",
+        password: "password123",
         role: "doctor",
         department: "Cardiology",
         phone: "+1-555-0101",
@@ -120,6 +121,7 @@ const seedData = async () => {
       {
         name: "James Gordon",
         email: "james.gordon@mediflow.com",
+        password: "password123",
         role: "inventory_manager",
         department: "Pharmacy & Supplies",
         phone: "+1-555-0102",
@@ -129,6 +131,7 @@ const seedData = async () => {
       {
         name: "Linda Vance",
         email: "linda.vance@mediflow.com",
+        password: "password123",
         role: "insurance_manager",
         department: "Billing & Claims",
         phone: "+1-555-0103",
@@ -138,6 +141,7 @@ const seedData = async () => {
       {
         name: "Nurse Rachel Green",
         email: "rachel.green@mediflow.com",
+        password: "password123",
         role: "nurse",
         department: "Emergency Medicine",
         phone: "+1-555-0104",
@@ -147,6 +151,7 @@ const seedData = async () => {
       {
         name: "Arthur Pendragon",
         email: "arthur.pendragon@mediflow.com",
+        password: "password123",
         role: "admin",
         department: "Hospital Administration",
         phone: "+1-555-0105",
