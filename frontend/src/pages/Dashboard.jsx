@@ -6,6 +6,8 @@ const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [policies, setPolicies] = useState([]);
+  const [policiesLoading, setPoliciesLoading] = useState(false);
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -14,12 +16,31 @@ const Dashboard = () => {
         setUser(u);
         const res = await api.get('/auth/dashboard');
         setData(res.data);
+
+        if (res.data && res.data.role === 'insurance_manager') {
+          fetchPolicies();
+        }
       } catch (err) {
         console.error("Error fetching dashboard metrics:", err);
       } finally {
         setLoading(false);
       }
     };
+
+    const fetchPolicies = async () => {
+      try {
+        setPoliciesLoading(true);
+        const res = await api.get('/insurance/all');
+        if (res.data.success) {
+          setPolicies(res.data.policies || []);
+        }
+      } catch (err) {
+        console.error('Failed to fetch policies on dashboard:', err);
+      } finally {
+        setPoliciesLoading(false);
+      }
+    };
+
     fetchDashboard();
   }, []);
 
@@ -91,7 +112,8 @@ const Dashboard = () => {
           </div>
         )}
 
-        {data.totalClaims !== undefined && (
+        {/* Removed Total Claims card for the insurance_manager as requested */}
+        {data.role !== 'insurance_manager' && data.totalClaims !== undefined && (
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
               <FileText size={24} />
@@ -116,7 +138,49 @@ const Dashboard = () => {
         )}
       </div>
 
-      {/* Render Lists based on role */}
+      {/* Render Table of Active Policies for Insurance Manager */}
+      {data.role === 'insurance_manager' && (
+        <div className="mt-8 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-black text-slate-800">Available Active Policies</h3>
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-600 border border-brand-100">
+              {policies.length} Policies
+            </span>
+          </div>
+          {policiesLoading ? (
+            <div className="flex justify-center p-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
+            </div>
+          ) : policies.length === 0 ? (
+            <p className="text-slate-400 text-sm italic">No active insurance policies found in the database.</p>
+          ) : (
+            <div className="overflow-x-auto border border-slate-50 rounded-2xl">
+              <table className="w-full border-collapse text-left">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-100">
+                    <th className="px-4 py-3 text-xs font-black uppercase text-slate-400">Patient</th>
+                    <th className="px-4 py-3 text-xs font-black uppercase text-slate-400">Type</th>
+                    <th className="px-4 py-3 text-xs font-black uppercase text-slate-400">Policy Number</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {policies.map((p) => (
+                    <tr key={p._id} className="text-sm font-medium hover:bg-slate-50/50">
+                      <td className="px-4 py-3 font-bold text-slate-800">{p.patient_id?.name || 'N/A'}</td>
+                      <td className="px-4 py-3 capitalize">{p.policy_type || 'standard'}</td>
+                      <td className="px-4 py-3 font-mono text-xs text-brand-600 font-bold bg-brand-50/30 px-2.5 py-1 rounded-xl w-fit">
+                        {p.policy_number || p._id}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Render Lists based on other roles */}
       {data.recentConsultations && (
         <div className="mt-8 bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
           <h3 className="text-lg font-bold text-slate-800 mb-4">Recent Consultations</h3>

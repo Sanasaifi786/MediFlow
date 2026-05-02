@@ -13,10 +13,11 @@ const insuranceSchema = new mongoose.Schema(
       required: [true, "Policy type is required"],
       trim: true,
     },
-    past_claims: {
-      type: Number,
-      default: 0,
-      min: [0, "Past claims cannot be negative"],
+    policy_number: {
+      type: String,
+      required: [true, "Policy number is required"],
+      trim: true,
+      unique: true,
     },
   },
   {
