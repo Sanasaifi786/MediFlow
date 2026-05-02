@@ -19,11 +19,11 @@ function App() {
   return (
     <Routes>
       {/* Home path hits the login form. If already logged in, skip to /app */}
-      <Route 
-        path="/" 
-        element={localStorage.getItem("token") ? <Navigate to="/app" replace /> : <Login />} 
+      <Route
+        path="/"
+        element={localStorage.getItem("token") ? <Navigate to="/app" replace /> : <Login />}
       />
-      
+
       {/* Protected routes are nested under /app */}
       <Route path="/app" element={
         <ProtectedRoute>

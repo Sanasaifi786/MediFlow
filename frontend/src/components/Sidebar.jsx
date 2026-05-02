@@ -54,12 +54,10 @@ const Sidebar = ({ isCollapsed }) => {
             key={item.name}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center rounded-2xl transition-all duration-300 overflow-hidden ${
-                isCollapsed ? 'justify-center p-4' : 'gap-5 px-6 py-4'
-              } ${
-                isActive
-                  ? 'bg-brand-50 text-brand-700 shadow-sm'
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+              `flex items-center rounded-2xl transition-all duration-300 overflow-hidden ${isCollapsed ? 'justify-center p-4' : 'gap-5 px-6 py-4'
+              } ${isActive
+                ? 'bg-brand-50 text-brand-700 shadow-sm'
+                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
               }`
             }
           >
@@ -87,7 +85,7 @@ const Sidebar = ({ isCollapsed }) => {
               My Profile
             </button>
             <div className="h-px bg-slate-100 my-1 mx-2"></div>
-            <button 
+            <button
               onClick={handleLogout}
               className="w-full flex items-center gap-3 px-4 py-3 text-rose-500 hover:bg-rose-50 rounded-xl text-sm font-bold transition-colors"
             >
@@ -97,17 +95,15 @@ const Sidebar = ({ isCollapsed }) => {
           </div>
         )}
 
-        <div 
+        <div
           onClick={() => !isCollapsed && setIsProfileOpen(!isProfileOpen)}
-          className={`group flex items-center transition-all duration-500 cursor-pointer border ${
-            isCollapsed 
-              ? 'justify-center p-3 rounded-xl border-transparent hover:bg-slate-100' 
+          className={`group flex items-center transition-all duration-500 cursor-pointer border ${isCollapsed
+              ? 'justify-center p-3 rounded-xl border-transparent hover:bg-slate-100'
               : `p-4 rounded-2xl gap-3 ${isProfileOpen ? 'bg-slate-900 border-slate-900 shadow-lg' : 'bg-slate-50 border-transparent hover:bg-slate-100'}`
-          }`}
+            }`}
         >
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 transition-colors ${
-            isProfileOpen ? 'bg-slate-800 text-white' : 'bg-brand-100 text-brand-600'
-          }`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 transition-colors ${isProfileOpen ? 'bg-slate-800 text-white' : 'bg-brand-100 text-brand-600'
+            }`}>
             {user?.name?.charAt(0)?.toUpperCase() || 'U'}
           </div>
           {!isCollapsed && (
