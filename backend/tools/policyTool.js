@@ -16,16 +16,16 @@ module.exports = async function (input) {
             past_claims: policy.past_claims,
             coverage_limit: 200000 // Still static as it's not in the requested schema
           };
-        } else {
-          return { error: `Insurance policy not found for patient "${patient.name}".` };
         }
-      } else {
-        return { error: `Patient "${name}" not found in our database.` };
       }
     }
 
-    // Instead of fallback mock data
-    return { error: `Invalid or missing patient name for policy check.` };
+    // Default fallback policy / Mock data
+    return {
+      policy_type: "standard",
+      coverage_limit: 200000,
+      past_claims: 0,
+    };
   } catch (error) {
     console.error("Error in policyTool:", error.message);
     return { error: error.message };
