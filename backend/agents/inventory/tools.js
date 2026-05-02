@@ -18,12 +18,11 @@ const updateStock = async (itemName, change) => {
   try {
     let item = await Inventory.findOne({ medicine_name: new RegExp(itemName, "i") });
     if (!item) {
-      item = new Inventory({
-        medicine_name: itemName,
-        current_stock: change,
-      });
-    } else {
-      item.current_stock += change;
+      return { error: `Item "${itemName}" not found in inventory.` };
+    }
+    item.current_stock += change;
+    if (item.current_stock < 0) {
+      return { error: `Cannot deduct stock below 0. Current stock is ${item.current_stock - change}.` };
     }
     await item.save();
     return {
