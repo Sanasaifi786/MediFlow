@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Users, Package, FileText, CheckCircle } from 'lucide-react';
+import { Activity, Users, Package, FileText, CheckCircle, RefreshCcw, ClipboardList } from 'lucide-react';
 import api from '../api';
 
 const Dashboard = () => {
@@ -206,6 +206,39 @@ const Dashboard = () => {
               </li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {data.recentActivityLog && (
+        <div className="mt-12 bg-white rounded-[2.5rem] shadow-sm border border-slate-100 p-10">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
+              <ClipboardList size={20} />
+            </div>
+            <h3 className="text-xl font-black text-slate-900 tracking-tight">Your Recent Activity Log</h3>
+          </div>
+          <div className="space-y-4">
+            {data.recentActivityLog.map((log, i) => (
+              <div key={i} className="p-6 bg-slate-50 rounded-[1.8rem] border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 group hover:bg-white hover:shadow-xl hover:shadow-slate-100 transition-all duration-500">
+                <div className="flex items-center gap-4">
+                  <div className="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></div>
+                  <div>
+                    <p className="font-black text-slate-900">{log.patient_id?.name || 'Internal Patient'}</p>
+                    <p className="text-[10px] font-black text-brand-600 uppercase tracking-widest">{log.type}</p>
+                  </div>
+                </div>
+                <div className="flex-1 md:px-8">
+                  <p className="text-sm text-slate-500 italic leading-relaxed">"{log.details}"</p>
+                </div>
+                <div className="text-[10px] font-bold text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-100">
+                  {new Date(log.timestamp || log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </div>
+              </div>
+            ))}
+            {data.recentActivityLog.length === 0 && (
+              <div className="text-center py-12 text-slate-400 italic">No activity recorded in the current shift.</div>
+            )}
+          </div>
         </div>
       )}
     </div>

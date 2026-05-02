@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Bot, Terminal, FileText, User, LogOut, ChevronUp, Package, UserPlus } from 'lucide-react';
+import { Bot, Terminal, FileText, User, LogOut, ChevronUp, Package, UserPlus, ClipboardList } from 'lucide-react';
 
 const Sidebar = ({ isCollapsed }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -35,6 +35,9 @@ const Sidebar = ({ isCollapsed }) => {
       { name: 'Staff Management', path: '/app/staff', icon: UserPlus },
       { name: 'Reasoning Logs', path: '/app/logs', icon: Terminal },
       { name: 'System Prompts', path: '/app/prompts', icon: Bot }
+    ] : []),
+    ...(user?.role === 'nurse' ? [
+      { name: 'Patient Logs', path: '/app/nurse', icon: ClipboardList }
     ] : []),
     ...(user?.role === 'insurance_manager' ? [
       { name: 'Assistant', path: '/app/assistant', icon: Bot },
