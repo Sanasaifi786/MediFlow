@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
+import Dashboard from './pages/Dashboard';
 import Assistant from './pages/Assistant';
 import Logs from './pages/Logs';
 import Report from './pages/Report';
@@ -30,7 +31,8 @@ function App() {
           <Layout />
         </ProtectedRoute>
       }>
-        <Route index element={<Assistant />} />
+        <Route index element={<Dashboard />} />
+        <Route path="assistant" element={<Assistant />} />
         <Route path="logs" element={<Logs />} />
         <Route path="reports" element={<Report />} />
       </Route>
