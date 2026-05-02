@@ -213,11 +213,10 @@ Use your Admin credentials to log in. If no admin exists, register one directly 
 ### 🔐 Authentication
 | Endpoint | Method | Auth Required | Description |
 | :--- | :--- | :--- | :--- |
-| `/auth/login` | `POST` | ❌ | Login with email & password |
+| `/auth/login` | `POST` | ✅ | Login with email & password |
 | `/auth/dashboard` | `GET` | ✅ | Fetch role-specific dashboard data |
 | `/auth/employees` | `POST` | ✅ Admin | Create and authorize new staff |
 | `/auth/me` | `GET` | ✅ | Get current user profile details |
-| `/auth/reset-password` | `POST` | ❌ | Reset account password |
 
 ### 🧠 AI Brain Agent
 | Endpoint | Method | Auth Required | Description |
