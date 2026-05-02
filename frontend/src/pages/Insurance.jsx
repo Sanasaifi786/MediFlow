@@ -24,10 +24,21 @@ const Insurance = () => {
       const query = `Patient ${formData.name}, ${formData.age}yo, diagnosed with ${formData.disease}. Policy: ${formData.policyType}, Past claims: ${formData.pastClaims}`;
       const res = await api.post('/insurance/process', { query });
       
+      const { result: agentResult, steps: agentSteps } = res.data.data;
+      
+      // Gradually add real steps for interactive feel
+      if (agentSteps && agentSteps.length > 0) {
+        agentSteps.forEach((step, index) => {
+          setTimeout(() => {
+            setSteps(s => [...s, `[REASONING] ${step}`]);
+          }, index * 1000);
+        });
+      }
+
       setTimeout(() => {
-        setResult(res.data.data.result);
+        setResult(agentResult);
         setLoading(false);
-      }, 5500);
+      }, (agentSteps?.length || 1) * 1000 + 500);
     } catch (err) {
       console.error(err);
       setTimeout(() => {

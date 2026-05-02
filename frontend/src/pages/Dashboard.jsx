@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, FileText, Package, AlertCircle, ArrowRight } from 'lucide-react';
+import { ShieldCheck, FileText, Package, AlertCircle, ArrowRight, Cpu } from 'lucide-react';
+import ReasoningHub from '../components/ReasoningHub';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -71,59 +72,65 @@ const Dashboard = () => {
       </div>
 
       {/* Activity Feed & Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center">
-            <ActivityIcon className="mr-2 text-indigo-500" /> Recent Activity
-          </h3>
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-start p-3 hover:bg-slate-50 rounded-xl transition-colors border border-transparent hover:border-slate-100">
-                <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 mr-4 flex-shrink-0">
-                  {i === 1 ? <ShieldCheck size={20} /> : i === 2 ? <FileText size={20} /> : <AlertCircle size={20} />}
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-slate-800">
-                    {i === 1 ? 'Claim #1092 Approved' : i === 2 ? 'Discharge Summary Generated for John Doe' : 'Low Stock Alert: Paracetamol 500mg'}
-                  </p>
-                  <p className="text-xs text-slate-500 mt-1">{i * 10} minutes ago</p>
-                </div>
-              </div>
-            ))}
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-8 h-[500px]">
+          <ReasoningHub />
         </div>
 
-        <div className="bg-gradient-to-br from-slate-900 to-indigo-900 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-          <h3 className="text-lg font-bold mb-6 relative z-10">System Status</h3>
+        <div className="lg:col-span-4 flex flex-col gap-6">
+          <div className="bg-gradient-to-br from-slate-900 to-indigo-900 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden flex-1 min-h-[300px]">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+            <h3 className="text-lg font-bold mb-6 relative z-10 flex items-center gap-2">
+              <Cpu size={20} className="text-indigo-400" /> System Health
+            </h3>
+            
+            <div className="space-y-8 relative z-10">
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-indigo-200">AI Inference Load</span>
+                  <span className="font-semibold text-white">42%</span>
+                </div>
+                <div className="h-2 bg-indigo-950 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-400 w-[42%] rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)] transition-all duration-1000"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-indigo-200">System Latency</span>
+                  <span className="font-semibold text-white">124ms</span>
+                </div>
+                <div className="h-2 bg-indigo-950 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-400 w-[25%] rounded-full"></div>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-indigo-200">Active Agents</span>
+                  <span className="font-semibold text-white">4 / 4</span>
+                </div>
+                <div className="flex gap-2 mt-3">
+                  {['Insurance', 'Discharge', 'Inventory', 'Brain'].map((agent) => (
+                    <div key={agent} className="px-2 py-1 bg-indigo-950/50 border border-indigo-800 rounded text-[10px] text-indigo-300">
+                      {agent}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="pt-6 border-t border-indigo-800/50 mt-6">
+                <div className="flex items-center text-emerald-400 text-xs font-medium">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></div>
+                  Multi-Agent Mesh Network Active
+                </div>
+              </div>
+            </div>
+          </div>
           
-          <div className="space-y-6 relative z-10">
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-indigo-200">AI Processing Load</span>
-                <span className="font-semibold text-white">42%</span>
-              </div>
-              <div className="h-2 bg-indigo-950 rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-400 w-[42%] rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
-              </div>
-            </div>
-            
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-indigo-200">API Requests (Today)</span>
-                <span className="font-semibold text-white">1,240 / 5,000</span>
-              </div>
-              <div className="h-2 bg-indigo-950 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-400 w-[25%] rounded-full"></div>
-              </div>
-            </div>
-            
-            <div className="pt-4 border-t border-indigo-800/50 mt-4">
-              <div className="flex items-center text-emerald-400 text-sm font-medium">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></div>
-                All Agents Online & Active
-              </div>
-            </div>
+          <div className="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg group cursor-pointer hover:bg-indigo-700 transition-colors">
+            <h4 className="font-bold mb-1">New Feature Alert</h4>
+            <p className="text-indigo-100 text-xs leading-relaxed opacity-80">The Brain Agent now supports complex reasoning across all hospital departments. Try asking a cross-functional query!</p>
           </div>
         </div>
       </div>

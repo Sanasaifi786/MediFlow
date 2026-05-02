@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import FloatingAssistant from './FloatingAssistant';
 
 const Layout = () => {
   return (
@@ -11,6 +12,7 @@ const Layout = () => {
           <Outlet />
         </div>
       </main>
+      <FloatingAssistant />
     </div>
   );
 };

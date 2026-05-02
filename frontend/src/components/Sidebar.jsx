@@ -41,14 +41,8 @@ const Sidebar = () => {
       </nav>
 
       <div className="p-4 border-t border-slate-100">
-        <div className="flex items-center gap-3 px-4 py-3">
-          <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden">
-            <img src="https://ui-avatars.com/api/?name=Dr+Smith&background=random" alt="Doctor" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-slate-900">Dr. Smith</span>
-            <span className="text-xs text-slate-500">Cardiology</span>
-          </div>
+        <div className="flex items-center justify-center py-2 text-xs text-slate-400 font-medium">
+          © 2026 MediFlow AI
         </div>
       </div>
     </aside>
